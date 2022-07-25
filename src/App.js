@@ -1,18 +1,25 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+import HomePage from './components/HomePage/HomePage'
+import PageNotFound from './components/PageNotFound/PageNotFound'
+import TunePlayer from './components/TunePlayer/TunePlayer'
+import MyTunes from './components/MyTunes/MyTunes'
+import Navigation from './components/Navigation/Navigation'
 import './App.css'
-import { Stack, Button } from 'react-bootstrap';
 
 const App = () => {
   return (
     <div className="App">
-      <p>Tunes app!</p>
-      <Stack direction="horizontal" gap={2}>
-        <Button as="a" variant="primary">
-          Primary button test
-        </Button>
-        <Button as="a" variant="outline-success">
-          Success button test
-        </Button>
-      </Stack>
+      <BrowserRouter>
+      <Navigation />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/tunes" element={<MyTunes />}>
+            <Route path=":tuneId" element={<TunePlayer />} />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
