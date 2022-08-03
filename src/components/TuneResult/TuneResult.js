@@ -34,7 +34,7 @@ export default function TuneResult(props) {
   }, [props.id])
 
   return (
-    <div className='TuneResult mt-2' onClick={() => navigate(`/tunes/${props.id}`)}>
+    <div className='TuneResult mt-2' onClick={() => navigate(`/tune/${props.id}`)}>
       <div className="tune-info d-flex">
         <div className="tune-title flex-grow-1">
           <h4>{props.title}</h4>

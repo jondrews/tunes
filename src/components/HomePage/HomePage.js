@@ -1,5 +1,4 @@
 import React from 'react'
-import abcjs from "abcjs"
 
 import { useState, useEffect } from 'react'
 // import { Stack, Button } from 'react-bootstrap'
@@ -9,7 +8,8 @@ import './HomePage.css'
 export default function HomePage() {
   const [totalPages, setTotalPages] = useState(0)
   const [totalResults, setTotalResults] = useState(0)
-  const [page, setPage] = useState(1)
+  // const [page, setPage] = useState(1)
+  const page = 1
   const [tuneList, setTuneList] = useState([])  // array of Objects
 
   useEffect(() => {

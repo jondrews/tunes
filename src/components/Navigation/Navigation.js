@@ -27,8 +27,8 @@ export default function Navigation() {
             <NavLink to="/" className="nav-link">
               Home
             </NavLink>
-            <NavLink to="/tunes" className="nav-link">
-              My Tunes
+            <NavLink to="/tunebook" className="nav-link">
+              My Tunebook
             </NavLink>
           </Nav>
         </Navbar.Collapse>
