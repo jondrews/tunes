@@ -9,7 +9,7 @@ import "./Navigation.css";
 
 export default function Navigation() {
   return (
-    <Navbar bg="dark" variant="dark" expand="md" className="Navigation">
+    <Navbar fixed="top" bg="dark" variant="dark" expand="md" className="Navigation">
       <Container>
         <Navbar.Brand href="/">
           <img
