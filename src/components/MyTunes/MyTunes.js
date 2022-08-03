@@ -1,13 +1,13 @@
 import React from 'react'
-import TunePlayer from '../TunePlayer/TunePlayer'
+import TuneNotation from '../TuneNotation/TuneNotation'
 import './MyTunes.css'
 
 export default function MyTunes() {
   return (
     <div>
-      MyTunes
+      Tunes
       <div className='TunePlayer'>
-        <TunePlayer />
+        <TuneNotation />
       </div>
     </div>
   )

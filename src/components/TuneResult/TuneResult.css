@@ -1,11 +1,18 @@
 .TuneResult {
   padding: 5px;
+  align-self: center;
+  width: 80%;
   border: 1px solid grey;
   border-radius: 10px;
   cursor: pointer;
 }
 
 .TuneResult .tune-type {
+  padding: 5px;
+  border: 1px solid grey;
+  border-radius: 10px;
+}
+.TuneResult .tune-key {
   padding: 5px;
   border: 1px solid grey;
   border-radius: 10px;

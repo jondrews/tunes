@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import HomePage from './components/HomePage/HomePage'
 import PageNotFound from './components/PageNotFound/PageNotFound'
-import TunePlayer from './components/TunePlayer/TunePlayer'
+import TuneNotation from './components/TuneNotation/TuneNotation'
 import MyTunes from './components/MyTunes/MyTunes'
 import Navigation from './components/Navigation/Navigation'
 import './App.css'
@@ -15,7 +15,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/tunes" element={<MyTunes />}>
-            <Route path=":tuneId" element={<TunePlayer />} />
+            <Route path=":tuneId" element={<TuneNotation />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>

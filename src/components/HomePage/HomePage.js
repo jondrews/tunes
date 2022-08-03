@@ -13,8 +13,6 @@ export default function HomePage() {
   const [tuneList, setTuneList] = useState([])  // array of Objects
 
   useEffect(() => {
-    abcjs.renderAbc("test-notation", "X:1\nK:D\nDDAA|BBA2|\n")
-
     const url = `https://thesession.org/tunes/popular?format=json`
     fetch(url)
       .then((response) => response.json())
@@ -38,104 +36,21 @@ export default function HomePage() {
   
   return (
     <div className='Homepage scrollable'>
-      {/* <Stack direction="horizontal" gap={2}>
-        <Button as="a" variant="primary">
-          Primary button test
-        </Button>
-        <Button as="a" variant="outline-success">
-          Success button test
-        </Button>
-      </Stack>
-      <div id="test-notation"></div> */}
-
+      <h2>Popular tunes</h2>
       Total Results: { totalResults }<br />
       Total Pages: { totalPages }<br />
-      {tuneList.map((tune) => (
-        <TuneResult 
-          key={tune.id}
-          id={tune.id}
-          title={tune.name}
-          popularity={tune.tunebooks}
-          tuneType={tune.type}
-          date={tune.date}
-        />
-      ))}
-      <br />
-      <br />
-      <br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
-      blah blah<br />
+      <div className="results">
+        {tuneList.map((tune) => (
+          <TuneResult 
+            key={tune.id}
+            id={tune.id}
+            title={tune.name}
+            popularity={tune.tunebooks}
+            tuneType={tune.type}
+            date={tune.date}
+          />
+        ))}
+      </div>
     </div>
   )
 }

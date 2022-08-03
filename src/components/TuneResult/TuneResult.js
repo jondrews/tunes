@@ -9,7 +9,7 @@ export default function TuneResult(props) {
   const navigate = useNavigate()
 
   const renderNotation = (element, tune) => {
-    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${tune.abc}\n`)
+    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${tune.abc.slice(0,30)}\n`, { responsive: "resize" })
   }
 
 
@@ -37,7 +37,7 @@ export default function TuneResult(props) {
     <div className='TuneResult mt-2' onClick={() => navigate(`/tunes/${props.id}`)}>
       <div className="tune-info d-flex">
         <div className="tune-title flex-grow-1">
-          {props.title}
+          <h4>{props.title}</h4>
         </div>
         <div className="tune-type">
           {props.tuneType}
