@@ -9,9 +9,9 @@ import './App.css'
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="App" data-testId='App'>
       <BrowserRouter>
-        <Navigation testId='navbar'/>
+        <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/tune" element={<TuneNotation />}>
