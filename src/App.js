@@ -9,7 +9,7 @@ import './App.css'
 
 const App = () => {
   return (
-    <div className="App" data-testId='App'>
+    <div className="App" data-testid='App'>
       <BrowserRouter>
         <Navigation />
         <Routes>

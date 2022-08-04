@@ -24,7 +24,7 @@ export default function TuneResult(props) {
           console.log(`Tune ${props.id} data:`, data)
           setTuneData(data.settings[0])
           // 'settings' here refers to the settings (variants) of a folk tune
-          renderNotation(`${props.id}insipit`, data.settings[0])
+          renderNotation(`${props.id}incipit`, data.settings[0])
         })
         .catch((error) => {
           console.log(`.catch method caught an error!:`, error)
@@ -48,8 +48,8 @@ export default function TuneResult(props) {
       </div>
 
       <div 
-        className="tune-insipit"
-        id={props.id + 'insipit'}
+        className="tune-incipit"
+        id={props.id + 'incipit'}
       ></div>
     </div>
   )
