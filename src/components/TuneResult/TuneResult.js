@@ -1,17 +1,35 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import abcjs from 'abcjs'
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import abcjs from "abcjs"
 
-import './TuneResult.css'
+import "./TuneResult.css"
 
 export default function TuneResult(props) {
-  const [tuneData, setTuneData] = useState()
+  const [tuneObject, setTuneObject] = useState()
   const navigate = useNavigate()
 
   const renderNotation = (element, tune) => {
-    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${tune.abc.slice(0,30)}\n`, { responsive: "resize" })
+    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${tune.abc.slice(0, 30)}\n`, {
+      responsive: "resize",
+    })
   }
 
+  const filterByTuneType = (tuneType) => {
+    console.log(`Filter tunes: Show ${tuneType}s`)
+  }
+
+  const filterByKey = (tuneKey) => {
+    console.log(`Filter tunes: Show tunes in ${tuneKey}`)
+  }
+
+  const handleClick = (event, callback, arg) => {
+    callback(arg)
+    // stop the click from propagating to the outer clickable div
+    // https://stackoverflow.com/a/2385131/5474303
+    if (!event) event = window.event
+    event.cancelBubble = true
+    if (event.stopPropagation) event.stopPropagation()
+  }
 
   useEffect(() => {
     const url = `https://thesession.org/tunes/${props.id}?format=json`
@@ -22,8 +40,8 @@ export default function TuneResult(props) {
         .then((response) => response.json())
         .then((data) => {
           console.log(`Tune ${props.id} data:`, data)
-          setTuneData(data.settings[0])
           // 'settings' here refers to the settings (variants) of a folk tune
+          setTuneObject(data)
           renderNotation(`${props.id}incipit`, data.settings[0])
         })
         .catch((error) => {
@@ -34,23 +52,64 @@ export default function TuneResult(props) {
   }, [props.id])
 
   return (
-    <div className='TuneResult mt-2' onClick={() => navigate(`/tune/${props.id}`)}>
+    <div
+      className="TuneResult mt-2 d-flex flex-column"
+      onClick={() => navigate(`/tune/${props.id}`)}
+    >
       <div className="tune-info d-flex">
-        <div className="tune-title flex-grow-1">
-          <h4>{props.title}</h4>
-        </div>
-        <div className="tune-type">
-          {props.tuneType}
-        </div>
-        <div className="tune-key">
-          {tuneData ? tuneData.key : ""}
-        </div>
+        {tuneObject ? (
+          <div className="tune-title flex-grow-1">
+            <h4>{props.title}</h4>
+          </div>
+        ) : (
+          <div className="tune-title flex-grow-1">
+            <p>Loading...</p>
+          </div>
+        )}
+
+        {tuneObject && (
+          <div
+            className="tune-type"
+            onClick={(event) =>
+              handleClick(event, filterByTuneType, props.tuneType)
+            }
+          >
+            {props.tuneType}
+          </div>
+        )}
+
+        {tuneObject && (
+          <div
+            className="tune-key"
+            onClick={(event) =>
+              handleClick(event, filterByKey, tuneObject.settings[0].key)
+            }
+          >
+            {tuneObject.settings[0].key}
+          </div>
+        )}
       </div>
 
-      <div 
-        className="tune-incipit"
-        id={props.id + 'incipit'}
-      ></div>
+      <div className="tune-incipit" id={props.id + "incipit"}></div>
+
+      {tuneObject && (
+        <div className="actions d-flex flex-row-reverse">
+          <span
+            className="add-to-tunebook btn btn-outline-danger"
+            onClick={(event) =>
+              handleClick(
+                event, 
+                props.toggleTuneBookEntry, 
+                {
+                  'tuneObject': tuneObject,
+                  'dateAdded': Date.now()
+                })
+            }
+          >
+            Add
+          </span>
+        </div>
+      )}
     </div>
   )
 }

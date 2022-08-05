@@ -1,3 +1,13 @@
 .Navigation .navbar-brand {
   font-family: 'Irish Grover', cursive;
 }
+.Navigation .tunebook-count {
+  background-color: var(--bs-gray-800);
+  margin-left: 2px;
+  padding: 0px 4px 2px;
+  border-radius: 5px;
+  border: 1px solid var(--bs-indigo);
+  font-size: smaller;
+  position: relative;
+  bottom: 5px;
+}

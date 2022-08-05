@@ -1,15 +1,20 @@
-import React from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-// import NavDropdown from 'react-bootstrap/NavDropdown'
-import { NavLink } from "react-router-dom";
+import React from "react"
+import Container from "react-bootstrap/Container"
+import Nav from "react-bootstrap/Nav"
+import Navbar from "react-bootstrap/Navbar"
+import { NavLink } from "react-router-dom"
 
-import "./Navigation.css";
+import "./Navigation.css"
 
-export default function Navigation() {
+export default function Navigation(props) {
   return (
-    <Navbar fixed="top" bg="dark" variant="dark" expand="md" className="Navigation">
+    <Navbar
+      fixed="top"
+      bg="dark"
+      variant="dark"
+      expand="md"
+      className="Navigation"
+    >
       <Container>
         <Navbar.Brand href="/">
           <img
@@ -28,11 +33,19 @@ export default function Navigation() {
               Home
             </NavLink>
             <NavLink to="/tunebook" className="nav-link">
-              My Tunebook
+              My tunebook
+              {props.tuneBook.length > 0 ? (
+                <span className="tunebook-count">{props.tuneBook.length}</span>
+              ) : (
+                ""
+              )}
+            </NavLink>
+            <NavLink to="/practice" className="nav-link">
+              Practice
             </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  );
+  )
 }

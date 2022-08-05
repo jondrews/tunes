@@ -1,29 +1,29 @@
-# name: Upload Website to S3
+name: Upload Website to S3
 
-# on:
-#   push:
-#     branches:
-#       - main
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#       - name: Configure AWS Creds
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-#       # Install depepndencies and run unit tests
-#       - name: Install dependencies and run tests
-#         run: npm install && npm run test
+      # Install depepndencies and run unit tests
+      - name: Install dependencies and run tests
+        run: npm install && npm run test
 
-#       - name: Build React App
-#         run: REACT_APP_API_KEY=${{ secrets.API_KEY }} npm run build
+      - name: Build React App
+        run: REACT_APP_API_KEY=${{ secrets.API_KEY }} npm run build
 
-#       - name: Deploy static site to S3 bucket
-#         run: aws s3 sync ./build/ s3://${{ secrets.BUCKET }} --delete
+      - name: Deploy static site to S3 bucket
+        run: aws s3 sync ./build/ s3://${{ secrets.BUCKET }} --delete
