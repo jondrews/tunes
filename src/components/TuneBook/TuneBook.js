@@ -10,41 +10,13 @@ export default function TuneBook(props) {
 
   const tuneSelection = () => {
     return(
-      <>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-        <p>Tune name number one.</p>
-        <p>Next tune here.</p>
-        <p>Then a third tune.</p>
-      </>
+      <div className="tune-selection">
+        {props.tuneBook.map((entry) => (
+          <div className="tune-item" key={entry.tuneObject.id}>
+            {entry.tuneObject.name}
+          </div>
+        ))}
+      </div>
     )
   }
 
