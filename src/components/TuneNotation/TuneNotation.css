@@ -1,4 +1,4 @@
-.no-tune-selected {
+.no-tune-selected, .select-from-tunebook {
   text-align: center;
-  margin-top: 50px;
+  margin: 50px auto;
 }

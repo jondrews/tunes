@@ -6,6 +6,7 @@ import "./TuneNotation.css"
 
 export default function TuneNotation(props) {
   const [tuneObject, setTuneObject] = useState()
+  const [tuneSetting, setTuneSetting] = useState(0)
   const [dimensions, setDimensions] = useState({
     height: 750,
     width: 750,
@@ -48,10 +49,28 @@ export default function TuneNotation(props) {
           console.log(`.catch method caught an error!:`, error)
         })
     }
+
+    const renderNotation = (element, tune, windowWidth) => {
+      let abc = tune.settings[tuneSetting].abc // TODO: user selects a preferred setting
+      abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
+      abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
+      abcjs.renderAbc(
+        element,
+        `X:1\nT:${tune.name}\nK:${tune.settings[0].key}\n${abc}\n`,
+        {
+          staffwidth: windowWidth * 0.9,
+          wrap: {
+            minSpacing: 1.8,
+            maxSpacing: 2.6,
+            preferredMeasuresPerLine: Math.round(windowWidth / 200),
+          },
+        }
+      )
+    }
     return () => {
       window.removeEventListener("resize", handleResize)
     }
-  }, [params.tuneId, dimensions.width])
+  }, [params.tuneId, dimensions.width, tuneSetting])
 
   // NOTE for parsing time signatures:
   // Barndance, Reel, Hornpipe, Strathspey	4/4
@@ -63,27 +82,39 @@ export default function TuneNotation(props) {
   // Three-two	3/2
   // The default note length in each case is 1/8.
 
-  const renderNotation = (element, tune, windowWidth) => {
-    let abc = tune.settings[0].abc // TODO: user selects a preferred setting
-    abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
-    abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
-    abcjs.renderAbc(
-      element,
-      `X:1\nT:${tune.name}\nK:${tune.settings[0].key}\n${abc}\n`,
-      {
-        staffwidth: windowWidth * 0.9,
-        wrap: {
-          minSpacing: 1.8,
-          maxSpacing: 2.6,
-          preferredMeasuresPerLine: Math.round(windowWidth / 200),
-        },
-      }
-    )
-  }
-
   return params.tuneId ? (
     <div className="notation-container" id="notation-container">
-      {params.tuneId ? 'tuneId = ' + params.tuneId : 'no tune id'}
+      {tuneObject && (
+        <div className="settings-select d-flex">
+          <p className="settings-select-text">
+            Showing #{tuneSetting + 1} out of {tuneObject.settings.length}{" "}
+            settings of this tune
+          </p>
+          <button
+            onClick={() =>
+              setTuneSetting(
+                tuneSetting > 0
+                  ? tuneSetting - 1
+                  : tuneObject.settings.length - 1
+              )
+            }
+          >
+            prev
+          </button>
+          <button
+            onClick={() =>
+              setTuneSetting(
+                tuneSetting < tuneObject.settings.length - 1
+                  ? tuneSetting + 1
+                  : 0
+              )
+            }
+          >
+            next
+          </button>
+        </div>
+      )}
+
       <div className="notation" id="notation"></div>
 
       <div className="actions d-flex">
@@ -101,6 +132,11 @@ export default function TuneNotation(props) {
           </button>
         )}
       </div>
+    </div>
+  ) : props.tuneBook.length > 0 ? (
+    <div className="select-from-tunebook">
+      <h2>Select a tune</h2>
+      <p>from the tunebook menu on the left</p>
     </div>
   ) : (
     <div className="no-tune-selected">

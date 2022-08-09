@@ -15,6 +15,9 @@ export default function TuneBook(props) {
   const tuneSelection = () => {
     return props.tuneBook.length > 0 ? (
       <div className="tune-selection d-flex flex-column">
+        <div className="tune-selection-header">
+          <h3>Select a tune:</h3>
+        </div>
         {props.tuneBook.map((entry) => (
           <NavLink
             className="tune-item"
@@ -53,7 +56,7 @@ export default function TuneBook(props) {
 
       <Offcanvas show={show} onHide={handleClose} responsive="lg">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Select a tune:</Offcanvas.Title>
+          <Offcanvas.Title>My tunebook</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <div>{tuneSelection()}</div>
