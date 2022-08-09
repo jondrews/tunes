@@ -84,7 +84,7 @@ export default function TuneNotation(props) {
 
   return params.tuneId ? (
     <div className="notation-container" id="notation-container">
-      {tuneObject && (
+      {tuneObject && tuneObject.settings.length > 1 && (
         <div className="settings-select d-flex">
           <p className="settings-select-text">
             Showing #{tuneSetting + 1} out of {tuneObject.settings.length}{" "}
