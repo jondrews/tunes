@@ -4,16 +4,54 @@ import abcjs from "abcjs"
 
 import "./TuneNotation.css"
 
-export default function TuneNotation() {
+export default function TuneNotation(props) {
+  const [tuneObject, setTuneObject] = useState()
   const [dimensions, setDimensions] = useState({
-    height: document.getElementById("notation-container")
-      ? document.getElementById("notation-container").clientHeight
-      : 750,
-    width: document.getElementById("notation-container")
-      ? document.getElementById("notation-container").clientWidth
-      : 750,
+    height: 750,
+    width: 750,
   })
   let params = useParams()
+
+  const handleResize = () => {
+    setDimensions({
+      height: document.getElementById("notation-container")
+        ? document.getElementById("notation-container").clientHeight
+        : 750,
+      width: document.getElementById("notation-container")
+        ? document.getElementById("notation-container").clientWidth
+        : 750,
+    })
+  }
+
+  const isInTuneBook = (tuneId) => {
+    return (
+      props.tuneBook &&
+      props.tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
+    )
+  }
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener("resize", handleResize)
+
+    const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
+    if (params.tuneId) {
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(`Tune ${params.tuneId} data:`, data)
+          // 'settings' here refers to the settings (variants) of a folk tune
+          setTuneObject(data)
+          renderNotation("notation", data, dimensions.width)
+        })
+        .catch((error) => {
+          console.log(`.catch method caught an error!:`, error)
+        })
+    }
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [params.tuneId, dimensions.width])
 
   // NOTE for parsing time signatures:
   // Barndance, Reel, Hornpipe, Strathspey	4/4
@@ -26,12 +64,9 @@ export default function TuneNotation() {
   // The default note length in each case is 1/8.
 
   const renderNotation = (element, tune, windowWidth) => {
-    console.log("Rendering tune data from API:", tune)
-    let abc = tune.settings[0].abc
-    abc = abc.replace(/\|!/g, "|")
-    console.log("Erroneous exclamation marks removed:", abc)
-    abc = abc.replace(/:\| \|:/g, "::")
-    console.log("Double barline spaces removed:", abc)
+    let abc = tune.settings[0].abc // TODO: user selects a preferred setting
+    abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
+    abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
     abcjs.renderAbc(
       element,
       `X:1\nT:${tune.name}\nK:${tune.settings[0].key}\n${abc}\n`,
@@ -46,44 +81,24 @@ export default function TuneNotation() {
     )
   }
 
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        height: document.getElementById("notation-container")
-          ? document.getElementById("notation-container").clientHeight
-          : 750,
-        width: document.getElementById("notation-container")
-          ? document.getElementById("notation-container").clientWidth
-          : 750,
-      })
-    }
-    window.addEventListener("resize", handleResize)
-
-    const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
-    if (params.tuneId) {
-      fetch(url)
-        // .then((response) => catchError(response))
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(`Tune ${params.tuneId} data:`, data)
-          // 'settings' here refers to the settings (variants) of a folk tune
-          // setTuneData(data.settings[0])
-          renderNotation("notation", data, dimensions.width)
-        })
-        .catch((error) => {
-          console.log(`.catch method caught an error!:`, error)
-          // setDeets('error')
-        })
-    }
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [params.tuneId, dimensions.width])
-
   return (
     <div className="notation-container" id="notation-container">
       <div className="notation" id="notation"></div>
-      width of this div = {dimensions.width}
+      <div className="actions d-flex">
+        {tuneObject && (
+          <button
+            className="add-to-tunebook btn btn-outline-danger"
+            onClick={() => {
+              props.toggleTuneBookEntry({
+                tuneObject: tuneObject,
+                dateAdded: Date.now(),
+              })
+            }}
+          >
+            {isInTuneBook(tuneObject.id) ? "Remove" : "Add"}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

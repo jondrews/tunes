@@ -1,5 +1,7 @@
 .TuneResult {
   padding: 5px;
+  text-decoration: none;
+  color: var(--bs-black);
   align-self: center;
   width: 80%;
   border: 1px solid grey;

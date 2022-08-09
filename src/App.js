@@ -14,7 +14,7 @@ const App = () => {
   const [tuneBook, setTuneBook] = useState([]) // array of Objects
   const [filters, setFilters] = useState({
     type: "",
-    mode: "",
+    mode: { key: "", modeType: "major" },
     q: "",
     inTuneBook: false,
   })
@@ -65,8 +65,24 @@ const App = () => {
             }
           />
 
-          <Route path="/tune" element={<TuneNotation />}>
-            <Route path=":tuneId" element={<TuneNotation />} />
+          <Route
+            path="/tune"
+            element={
+              <TuneNotation
+                tuneBook={tuneBook}
+                toggleTuneBookEntry={toggleTuneBookEntry}
+              />
+            }
+          >
+            <Route
+              path=":tuneId"
+              element={
+                <TuneNotation
+                  tuneBook={tuneBook}
+                  toggleTuneBookEntry={toggleTuneBookEntry}
+                />
+              }
+            />
           </Route>
 
           <Route
@@ -78,7 +94,15 @@ const App = () => {
               />
             }
           >
-            <Route path=":tuneId" element={<TuneNotation />} />
+            <Route
+              path=":tuneId"
+              element={
+                <TuneNotation
+                  tuneBook={tuneBook}
+                  toggleTuneBookEntry={toggleTuneBookEntry}
+                />
+              }
+            />
           </Route>
 
           <Route

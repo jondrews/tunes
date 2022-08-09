@@ -19,21 +19,20 @@ export default function HomePage({
   const [showFilterOptions, setShowFilterOptions] = useState(true)
 
   useEffect(() => {
-    const filterString = `type=${filters.type}&mode=${filters.mode}&q=${filters.q}`
+    const filterString = `type=${filters.type}&mode=${
+      filters.mode.key ? filters.mode.key + filters.mode.modeType : ""
+    }&q=${filters.q}`
     const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
     console.log("API Call URL:", url)
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log("data from API", data)
         setTotalPages(data.pages)
         setTotalResults(data.total)
         if (page === 1) {
-          // normal state update method
           setResultsList(data.tunes)
         } else {
-          // using a functional update method here, to prevent an infinte loop:
-          // https://reactjs.org/docs/hooks-reference.html#functional-updates
           setResultsList((prevResultsList) => [
             ...prevResultsList,
             ...data.tunes,
@@ -49,8 +48,11 @@ export default function HomePage({
     <div className="Homepage scrollable">
       <div className="discover-header d-flex">
         <h2>Discover tunes</h2>
-        <button onClick={() => setShowFilterOptions(!showFilterOptions)} className="btn btn-outline-success">
-          filter
+        <button
+          onClick={() => setShowFilterOptions(!showFilterOptions)}
+          className="btn btn-outline-success"
+        >
+          {showFilterOptions ? "hide filter" : "show filter"}
         </button>
       </div>
       {showFilterOptions && (
@@ -65,7 +67,10 @@ export default function HomePage({
             popularity={tune.tunebooks}
             tuneType={tune.type}
             date={tune.date}
+            tuneBook={tuneBook}
             toggleTuneBookEntry={toggleTuneBookEntry}
+            filters={filters}
+            setFilters={setFilters}
           />
         ))}
 

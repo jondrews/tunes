@@ -16,10 +16,20 @@ export default function TuneResult(props) {
 
   const filterByTuneType = (tuneType) => {
     console.log(`Filter tunes: Show ${tuneType}s`)
+    props.setFilters((prevFilters) => ({
+      ...prevFilters,
+      type: `${tuneType}`,
+    }))
   }
 
   const filterByKey = (tuneKey) => {
-    console.log(`Filter tunes: Show tunes in ${tuneKey}`)
+    let key = /([A-G][b#♭♯]*)/.exec(tuneKey)[0]
+    let mode = tuneKey.slice(key.length)
+    console.log(`Setting filters to: Key ${key}, mode ${mode}`)
+    props.setFilters((prevFilters) => ({
+      ...prevFilters,
+      mode: {key: key, modeType: mode},
+    }))
   }
 
   const handleClick = (event, callback, arg) => {
@@ -31,6 +41,12 @@ export default function TuneResult(props) {
     if (event.stopPropagation) event.stopPropagation()
   }
 
+  const isInTuneBook = (tuneId) => {
+    return props.tuneBook && props.tuneBook.some(
+      (bookEntry) => bookEntry.tuneObject.id === tuneId
+    )
+  }
+
   useEffect(() => {
     const url = `https://thesession.org/tunes/${props.id}?format=json`
 
@@ -39,7 +55,7 @@ export default function TuneResult(props) {
         // .then((response) => catchError(response))
         .then((response) => response.json())
         .then((data) => {
-          console.log(`Tune ${props.id} data:`, data)
+          // console.log(`Tune ${props.id} data:`, data)
           // 'settings' here refers to the settings (variants) of a folk tune
           setTuneObject(data)
           renderNotation(`${props.id}incipit`, data.settings[0])
@@ -97,16 +113,13 @@ export default function TuneResult(props) {
           <span
             className="add-to-tunebook btn btn-outline-danger"
             onClick={(event) =>
-              handleClick(
-                event, 
-                props.toggleTuneBookEntry, 
-                {
-                  'tuneObject': tuneObject,
-                  'dateAdded': Date.now()
-                })
+              handleClick(event, props.toggleTuneBookEntry, {
+                tuneObject: tuneObject,
+                dateAdded: Date.now(),
+              })
             }
           >
-            Add
+            {isInTuneBook(tuneObject.id) ? 'Remove' : 'Add'}
           </span>
         </div>
       )}
