@@ -1,19 +1,26 @@
-import { useEffect } from "react"
-
 import notes from "../../notes.js"
+import modes from "../../modes.js"
 import "./FilterSelect.css"
 
 export default function FilterSelect({ filters, setFilters }) {
-  const changeModeFilter = (e) => {
-    console.log(`FilterSelect button clicked: ${e.target.value}`)
+  const changeKey = (e) => {
+    console.log(`FilterSelect key button clicked: ${e.target.value}`)
     setFilters((prevFilters) => ({
       ...prevFilters,
       mode: { key: e.target.value, modeType: prevFilters.mode.modeType },
     }))
   }
+  
+  const changeMode = (e) => {
+    console.log(`FilterSelect mode selected: ${e.target.value}`)
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      mode: { key: prevFilters.mode.key, modeType: e.target.value },
+    }))
+  }
 
   return (
-    <div className="FilterSelect">
+    <div className="FilterSelect d-flex">
       <div className="note-select-container d-flex">
         {notes.map((note, index) => (
           <div
@@ -35,7 +42,7 @@ export default function FilterSelect({ filters, setFilters }) {
               name="noteSelect"
               value={note}
               checked={filters.mode.key === note}
-              onChange={(e) => changeModeFilter(e)}
+              onChange={(e) => changeKey(e)}
             ></input>
             <label
               htmlFor={note}
@@ -51,27 +58,25 @@ export default function FilterSelect({ filters, setFilters }) {
         ))}
         <div
           className={
-            filters.mode.key
-              ? "note-select-div"
-              : "note-select-div active-div" 
+            filters.mode.key ? "note-select-div" : "note-select-div active-div"
           }
-          key='anyKey'
+          key="anyKey"
         >
           <input
             type="radio"
             className={
               filters.mode.key
                 ? "note-select-div"
-                : "note-select-div active-div" 
+                : "note-select-div active-div"
             }
-            id='anyKey'
+            id="anyKey"
             name="noteSelect"
-            value=''
-            onChange={(e) => changeModeFilter(e)}
+            value=""
+            onChange={(e) => changeKey(e)}
             checked={!filters.mode.key}
           ></input>
           <label
-            htmlFor='anyKey'
+            htmlFor="anyKey"
             className={
               filters.mode.key
                 ? "note-select-div"
@@ -83,8 +88,28 @@ export default function FilterSelect({ filters, setFilters }) {
         </div>
       </div>
 
-      {/* TODO: add najor/minor select */}
+      <div className="mode-select-container">
+        <select
+          name="mode-select"
+          id="mode-select"
+          value={filters.mode.key ? filters.mode.modeType || "major" : ""}
+          disabled={!filters.mode.key}
+          onChange={(e) => changeMode(e)}
+        >
+          <option value="">any mode</option>
+          <option value="major">major</option>
+          <option value="minor">minor</option>
+          {modes.map((mode) => (
+            <option value={mode} key={mode + "-mode"}>
+              {mode}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* TODO: add major/minor select */}
       {/* TODO: add mode select */}
+      {/* TODO: add tune type select */}
     </div>
   )
 }

@@ -14,7 +14,7 @@ const App = () => {
   const [tuneBook, setTuneBook] = useState([]) // array of Objects
   const [filters, setFilters] = useState({
     type: "",
-    mode: { key: "", modeType: "major" },
+    mode: { key: "", modeType: "" },
     q: "",
     inTuneBook: false,
   })

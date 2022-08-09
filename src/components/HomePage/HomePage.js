@@ -20,7 +20,7 @@ export default function HomePage({
 
   useEffect(() => {
     const filterString = `type=${filters.type}&mode=${
-      filters.mode.key ? filters.mode.key + filters.mode.modeType : ""
+      filters.mode.key ? filters.mode.key + (filters.mode.modeType || 'major') : ""
     }&q=${filters.q}`
     const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
     console.log("API Call URL:", url)
