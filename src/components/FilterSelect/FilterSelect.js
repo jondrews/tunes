@@ -4,7 +4,7 @@ import modes from "../../modes.js"
 import types from "../../types.js"
 import "./FilterSelect.css"
 
-export default function FilterSelect({ filters, setFilters }) {
+export default function FilterSelect({ filters, setFilters, setResultsList, setPage }) {
   Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   const changeKey = (e) => {
@@ -13,6 +13,8 @@ export default function FilterSelect({ filters, setFilters }) {
       ...prevFilters,
       mode: { key: e.target.value, modeType: prevFilters.mode.modeType },
     }))
+    setResultsList([])
+    setPage(1)
   }
 
   const changeMode = (e) => {
@@ -21,16 +23,20 @@ export default function FilterSelect({ filters, setFilters }) {
       ...prevFilters,
       mode: { key: prevFilters.mode.key, modeType: e.target.value },
     }))
+    setResultsList([])
+    setPage(1)
   }
-
+  
   const changeType = (e) => {
     console.log(`FilterSelect type selected: ${e.target.value}`)
     setFilters((prevFilters) => ({
       ...prevFilters,
       type: e.target.value,
     }))
+    setResultsList([])
+    setPage(1)
   }
-
+  
   return (
     <div className="FilterSelect d-flex">
       Show me &nbsp;
@@ -40,7 +46,7 @@ export default function FilterSelect({ filters, setFilters }) {
           id="type-select"
           value={filters.type || ""}
           onChange={(e) => changeType(e)}
-        >
+          >
           <option value="">all tunes</option>
           {types.map((type) => (
             <option value={type} key={type}>

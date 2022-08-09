@@ -1,5 +1,6 @@
 import React from "react"
 import { useState, useEffect } from "react"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 import FilterSelect from "../FilterSelect/FilterSelect"
 import TuneResult from "../TuneResult/TuneResult"
@@ -20,7 +21,9 @@ export default function HomePage({
 
   useEffect(() => {
     const filterString = `type=${filters.type}&mode=${
-      filters.mode.key ? filters.mode.key + (filters.mode.modeType || 'major') : ""
+      filters.mode.key
+        ? filters.mode.key + (filters.mode.modeType || "major")
+        : ""
     }&q=${filters.q}`
     const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
     console.log("API Call URL:", url)
@@ -56,9 +59,14 @@ export default function HomePage({
         </button>
       </div>
       {showFilterOptions && (
-        <FilterSelect filters={filters} setFilters={setFilters} />
+        <FilterSelect
+          filters={filters}
+          setFilters={setFilters}
+          setResultsList={setResultsList}
+          setPage={setPage}
+        />
       )}
-      <div className="results d-flex flex-column align-items-center">
+      {/* <div className="results d-flex flex-column align-items-center">
         {resultsList.map((tune) => (
           <TuneResult
             key={tune.id}
@@ -87,7 +95,48 @@ export default function HomePage({
             Show more
           </div>
         </div>
-      </div>
+      </div> */}
+      {totalResults} tunes found
+      <InfiniteScroll
+        dataLength={resultsList.length} //This is important field to render the next data
+        next={() => setPage(page + 1)}
+        hasMore={page < totalPages}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p className="end-of-results" style={{ textAlign: "center" }}>
+            <b>
+              Showing {resultsList.length} out of {totalResults} tunes found
+            </b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        // refreshFunction={this.refresh}
+        // pullDownToRefresh
+        // pullDownToRefreshThreshold={50}
+        // pullDownToRefreshContent={
+        //   <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+        // }
+        // releaseToRefreshContent={
+        //   <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+        // }
+      >
+        <div className="results d-flex flex-column align-items-center">
+          {resultsList.map((tune) => (
+            <TuneResult
+              key={tune.id}
+              id={tune.id}
+              title={tune.name}
+              popularity={tune.tunebooks}
+              tuneType={tune.type}
+              date={tune.date}
+              tuneBook={tuneBook}
+              toggleTuneBookEntry={toggleTuneBookEntry}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          ))}
+        </div>
+      </InfiniteScroll>
     </div>
   )
 }
