@@ -1,17 +1,27 @@
 import React from "react"
-
 import { useState, useEffect } from "react"
-// import { Stack, Button } from 'react-bootstrap'
+
+import FilterSelect from "../FilterSelect/FilterSelect"
 import TuneResult from "../TuneResult/TuneResult"
 import "./HomePage.css"
 
-export default function HomePage({ tuneBook, toggleTuneBookEntry, setResultsList, resultsList }) {
+export default function HomePage({
+  tuneBook,
+  toggleTuneBookEntry,
+  setResultsList,
+  resultsList,
+  filters,
+  setFilters,
+}) {
   const [totalPages, setTotalPages] = useState(0)
   const [totalResults, setTotalResults] = useState(0)
   const [page, setPage] = useState(1)
+  const [showFilterOptions, setShowFilterOptions] = useState(true)
 
   useEffect(() => {
-    const url = `https://thesession.org/tunes/popular?perpage=20&page=${page}&format=json`
+    const filterString = `type=${filters.type}&mode=${filters.mode}&q=${filters.q}`
+    const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
+    console.log("API Call URL:", url)
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -24,18 +34,28 @@ export default function HomePage({ tuneBook, toggleTuneBookEntry, setResultsList
         } else {
           // using a functional update method here, to prevent an infinte loop:
           // https://reactjs.org/docs/hooks-reference.html#functional-updates
-          setResultsList((prevResultsList) => [...prevResultsList, ...data.tunes])
+          setResultsList((prevResultsList) => [
+            ...prevResultsList,
+            ...data.tunes,
+          ])
         }
       })
       .catch((error) => {
         console.log(error)
       })
-  }, [page, setResultsList])
+  }, [page, setResultsList, filters])
 
   return (
     <div className="Homepage scrollable">
-      <h2>Popular tunes</h2>
-
+      <div className="discover-header d-flex">
+        <h2>Discover tunes</h2>
+        <button onClick={() => setShowFilterOptions(!showFilterOptions)} className="btn btn-outline-success">
+          filter
+        </button>
+      </div>
+      {showFilterOptions && (
+        <FilterSelect filters={filters} setFilters={setFilters} />
+      )}
       <div className="results d-flex flex-column align-items-center">
         {resultsList.map((tune) => (
           <TuneResult

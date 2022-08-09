@@ -1,9 +1,14 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import Offcanvas from "react-bootstrap/Offcanvas"
+import TuneNotation from "../TuneNotation/TuneNotation"
+
+import './TuneBook.css'
 
 export default function TuneBook(props) {
   const [show, setShow] = useState(false)
+  const navigate = useNavigate()
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -12,35 +17,41 @@ export default function TuneBook(props) {
     return(
       <div className="tune-selection">
         {props.tuneBook.map((entry) => (
-          <div className="tune-item" key={entry.tuneObject.id}>
+          <button 
+            className="tune-item" 
+            tabIndex="0"
+            key={entry.tuneObject.id}
+            onClick={() => navigate(`./${entry.tuneObject.id}`)}
+          >
             {entry.tuneObject.name}
-          </div>
+          </button>
         ))}
       </div>
     )
   }
 
   return (
-    <div className='Tunebook d-flex'>
-      <Button variant="primary" className="d-lg-none" onClick={handleShow}>
-        Launch
-      </Button>
-
-      <div className="d-none d-lg-flex w-25 flex-column bg-light" style={{overflow: 'scroll'}} >
-        { tuneSelection() }
+    <div className='TuneBook'>
+      <div className="offcanvas-button d-lg-none col-1">
+        <Button variant="primary" className="d-lg-none" onClick={handleShow}>
+          Tunebook
+        </Button>
       </div>
-      <div className="d-flex flex-column flex-grow-1 bg-primary">
-        Here's where the score goes.
+
+      <div className="score-area d-flex">
+        <div className="tune-selection-large d-none d-lg-block">
+          { tuneSelection() }
+        </div>
+        <TuneNotation />
       </div>
 
       <Offcanvas show={show} onHide={handleClose} responsive="lg">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Responsive offcanvas</Offcanvas.Title>
+          <Offcanvas.Title>Select a tune:</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <div>
             { tuneSelection() }
-            {props.tuneBook.map((bookEntry) => bookEntry.tuneObject.name).join(", ")}
           </div>
         </Offcanvas.Body>
       </Offcanvas>

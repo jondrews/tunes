@@ -1,0 +1,23 @@
+.TuneBook .tune-selection {
+  width: 25%;
+  min-width: 200px;
+}
+
+.TuneBook .tune-item, .offcanvas-body .tune-item {
+  cursor: pointer;
+  width: 100%;
+  border: 1px solid gray;
+  margin: 5px;
+  padding: 5px;
+}
+
+.TuneBook .notation-container {
+  width: 100%;
+}
+
+/* 
+}
+.TuneBook .notation {
+  width: 400px;
+  background-color: red;
+} */
