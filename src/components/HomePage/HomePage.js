@@ -16,7 +16,7 @@ export default function HomePage({
   const [totalPages, setTotalPages] = useState(0)
   const [totalResults, setTotalResults] = useState(0)
   const [page, setPage] = useState(1)
-  const [showFilterOptions, setShowFilterOptions] = useState(true)
+  const [showFilterOptions, setShowFilterOptions] = useState(false)
 
   useEffect(() => {
     const filterString = `type=${filters.type}&mode=${

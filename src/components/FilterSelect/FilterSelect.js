@@ -1,8 +1,12 @@
+import Pluralize from "pluralize"
 import notes from "../../notes.js"
 import modes from "../../modes.js"
+import types from "../../types.js"
 import "./FilterSelect.css"
 
 export default function FilterSelect({ filters, setFilters }) {
+  Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
+
   const changeKey = (e) => {
     console.log(`FilterSelect key button clicked: ${e.target.value}`)
     setFilters((prevFilters) => ({
@@ -10,7 +14,7 @@ export default function FilterSelect({ filters, setFilters }) {
       mode: { key: e.target.value, modeType: prevFilters.mode.modeType },
     }))
   }
-  
+
   const changeMode = (e) => {
     console.log(`FilterSelect mode selected: ${e.target.value}`)
     setFilters((prevFilters) => ({
@@ -19,8 +23,33 @@ export default function FilterSelect({ filters, setFilters }) {
     }))
   }
 
+  const changeType = (e) => {
+    console.log(`FilterSelect type selected: ${e.target.value}`)
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      type: e.target.value,
+    }))
+  }
+
   return (
     <div className="FilterSelect d-flex">
+      Show me &nbsp;
+      <div className="tune-type-select-container">
+        <select
+          name="type-select"
+          id="type-select"
+          value={filters.type || ""}
+          onChange={(e) => changeType(e)}
+        >
+          <option value="">all tunes</option>
+          {types.map((type) => (
+            <option value={type} key={type}>
+              {Pluralize(type, 2)}
+            </option>
+          ))}
+        </select>
+      </div>
+      &nbsp; in &nbsp;
       <div className="note-select-container d-flex">
         {notes.map((note, index) => (
           <div
@@ -87,7 +116,6 @@ export default function FilterSelect({ filters, setFilters }) {
           </label>
         </div>
       </div>
-
       <div className="mode-select-container">
         <select
           name="mode-select"
@@ -106,10 +134,6 @@ export default function FilterSelect({ filters, setFilters }) {
           ))}
         </select>
       </div>
-
-      {/* TODO: add major/minor select */}
-      {/* TODO: add mode select */}
-      {/* TODO: add tune type select */}
     </div>
   )
 }

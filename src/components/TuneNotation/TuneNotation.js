@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import abcjs from "abcjs"
 
@@ -81,9 +81,11 @@ export default function TuneNotation(props) {
     )
   }
 
-  return (
+  return params.tuneId ? (
     <div className="notation-container" id="notation-container">
+      {params.tuneId ? 'tuneId = ' + params.tuneId : 'no tune id'}
       <div className="notation" id="notation"></div>
+
       <div className="actions d-flex">
         {tuneObject && (
           <button
@@ -99,6 +101,13 @@ export default function TuneNotation(props) {
           </button>
         )}
       </div>
+    </div>
+  ) : (
+    <div className="no-tune-selected">
+      <h2>No tune selected</h2>
+      <p>
+        Head to the <Link to="/">homepage</Link> to find one
+      </p>
     </div>
   )
 }

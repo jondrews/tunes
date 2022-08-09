@@ -2,8 +2,8 @@ import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import Offcanvas from "react-bootstrap/Offcanvas"
-import TuneNotation from "../TuneNotation/TuneNotation"
 
+import TuneNotation from "../TuneNotation/TuneNotation"
 import "./TuneBook.css"
 
 export default function TuneBook(props) {
@@ -13,7 +13,7 @@ export default function TuneBook(props) {
   const handleShow = () => setShow(true)
 
   const tuneSelection = () => {
-    return (
+    return props.tuneBook.length > 0 ? (
       <div className="tune-selection d-flex flex-column">
         {props.tuneBook.map((entry) => (
           <NavLink
@@ -25,6 +25,10 @@ export default function TuneBook(props) {
             <div className="tune-item-title">{entry.tuneObject.name}</div>
           </NavLink>
         ))}
+      </div>
+    ) : (
+      <div className="tune-selection-empty">
+        <p>No tunes in tunebook</p>
       </div>
     )
   }
