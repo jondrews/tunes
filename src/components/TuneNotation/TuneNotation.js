@@ -1,6 +1,9 @@
 import { useParams, Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import abcjs from "abcjs"
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
 
 import "./TuneNotation.css"
 
@@ -15,11 +18,11 @@ export default function TuneNotation(props) {
 
   const handleResize = () => {
     setDimensions({
-      height: document.getElementById("notation-container")
-        ? document.getElementById("notation-container").clientHeight
+      height: document.getElementById("notation")
+        ? document.getElementById("notation").clientHeight
         : 750,
-      width: document.getElementById("notation-container")
-        ? document.getElementById("notation-container").clientWidth
+      width: document.getElementById("notation")
+        ? document.getElementById("notation").clientWidth
         : 750,
     })
   }
@@ -37,20 +40,21 @@ export default function TuneNotation(props) {
 
     const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
     if (params.tuneId) {
+      console.log('fetching data from API')
       fetch(url)
         .then((response) => response.json())
         .then((data) => {
           // console.log(`Tune ${params.tuneId} data:`, data)
           // 'settings' here refers to the settings (variants) of a folk tune
           setTuneObject(data)
-          renderNotation("notation", data, dimensions.width)
+          renderNotation("notation", data)
         })
         .catch((error) => {
           console.log(`.catch method caught an error!:`, error)
         })
     }
 
-    const renderNotation = (element, tune, windowWidth) => {
+    const renderNotation = (element, tune) => {
       let abc = tune.settings[tuneSetting].abc // TODO: user selects a preferred setting
       abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
       abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
@@ -58,11 +62,11 @@ export default function TuneNotation(props) {
         element,
         `X:1\nT:${tune.name}\nK:${tune.settings[0].key}\n${abc}\n`,
         {
-          staffwidth: windowWidth * 0.9,
+          staffwidth: dimensions.width * 0.9,
           wrap: {
             minSpacing: 1.8,
             maxSpacing: 2.6,
-            preferredMeasuresPerLine: Math.round(windowWidth / 200),
+            preferredMeasuresPerLine: Math.round(dimensions.width / 200),
           },
         }
       )
@@ -73,41 +77,47 @@ export default function TuneNotation(props) {
   }, [params.tuneId, dimensions.width, tuneSetting])
 
   return params.tuneId ? (
-    <div className="notation-container" id="notation-container">
+    <div className="TuneNotation">
       {tuneObject && tuneObject.settings.length > 1 && (
-        <div className="settings-select d-flex">
-          <p className="settings-select-text">
-            Showing #{tuneSetting + 1} out of {tuneObject.settings.length}{" "}
-            settings of this tune
+        <div className="settings-select-container">
+          <p className="settings-total-text">
+            This tune has {tuneObject.settings.length} settings
           </p>
-          <button
-            onClick={() =>
-              setTuneSetting(
-                tuneSetting > 0
-                  ? tuneSetting - 1
-                  : tuneObject.settings.length - 1
-              )
-            }
-          >
-            prev
-          </button>
-          <button
-            onClick={() =>
-              setTuneSetting(
-                tuneSetting < tuneObject.settings.length - 1
-                  ? tuneSetting + 1
-                  : 0
-              )
-            }
-          >
-            next
-          </button>
+          <div className="settings-select-action">
+            <button
+              className="settings-select-button"
+              onClick={() =>
+                setTuneSetting(
+                  tuneSetting > 0
+                    ? tuneSetting - 1
+                    : tuneObject.settings.length - 1
+                )
+              }
+            >
+              <ChevronLeftIcon />
+            </button>
+            <p className="settings-select-text">
+              Showing setting #{tuneSetting + 1}
+            </p>
+            <button
+              className="settings-select-button"
+              onClick={() =>
+                setTuneSetting(
+                  tuneSetting < tuneObject.settings.length - 1
+                    ? tuneSetting + 1
+                    : 0
+                )
+              }
+            >
+              <ChevronRightIcon />
+            </button>
+          </div>
         </div>
       )}
 
       <div className="notation" id="notation"></div>
 
-      <div className="actions d-flex">
+      <div className="notation-actions">
         {tuneObject && (
           <button
             className="add-to-tunebook btn btn-outline-danger"
@@ -118,6 +128,7 @@ export default function TuneNotation(props) {
               })
             }}
           >
+            <MenuBookIcon />
             {isInTuneBook(tuneObject.id) ? "Remove" : "Add"}
           </button>
         )}

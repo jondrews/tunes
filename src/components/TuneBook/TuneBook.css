@@ -12,7 +12,11 @@
   margin: 5px;
   padding: 5px;
 }
+.TuneBook .tune-item.active, .offcanvas-body .tune-item.active {
+  border: 2px solid red;
+}
 
-.TuneBook .notation-container {
+.TuneBook .TuneNotation {
   width: 100%;
 }
+

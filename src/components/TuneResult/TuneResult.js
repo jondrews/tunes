@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import MenuBookIcon from '@mui/icons-material/MenuBook'
 import abcjs from "abcjs"
 
 import "./TuneResult.css"
@@ -119,7 +120,8 @@ export default function TuneResult(props) {
               })
             }
           >
-            {isInTuneBook(tuneObject.id) ? 'Remove' : 'Add'}
+            <MenuBookIcon />
+            {isInTuneBook(tuneObject.id) ? "Remove" : "Add"}
           </span>
         </div>
       )}

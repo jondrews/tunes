@@ -30,7 +30,7 @@ export default function TuneBook(props) {
         ))}
       </div>
     ) : (
-      <div className="tune-selection-empty">
+      <div className="tune-selection tune-selection-empty">
         <p>No tunes in tunebook</p>
       </div>
     )
