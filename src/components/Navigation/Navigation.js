@@ -40,9 +40,9 @@ export default function Navigation(props) {
                 ""
               )}
             </NavLink>
-            <NavLink to="/practice" className="nav-link">
+            {/* <NavLink to="/practice" className="nav-link">
               Practice
-            </NavLink>
+            </NavLink> */}
           </Nav>
         </Navbar.Collapse>
       </Container>

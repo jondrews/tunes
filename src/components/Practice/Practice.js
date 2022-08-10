@@ -3,6 +3,6 @@ import './Practice.css'
 
 export default function Practice() {
   return (
-    <div>Practice</div>
+    <div>Shhh! Upcoming feature spoiler alert.<br></br>Nothing to see here.</div>
   )
 }

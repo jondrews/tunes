@@ -1,9 +1,9 @@
 import { useParams, Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import abcjs from "abcjs"
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import MenuBookIcon from "@mui/icons-material/MenuBook"
 
 import "./TuneNotation.css"
 
@@ -35,32 +35,29 @@ export default function TuneNotation(props) {
   }
 
   useEffect(() => {
-    handleResize()
     window.addEventListener("resize", handleResize)
 
     const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
     if (params.tuneId) {
-      console.log('fetching data from API')
+      setTuneSetting(0)
       fetch(url)
         .then((response) => response.json())
-        .then((data) => {
-          // console.log(`Tune ${params.tuneId} data:`, data)
-          // 'settings' here refers to the settings (variants) of a folk tune
-          setTuneObject(data)
-          renderNotation("notation", data)
-        })
-        .catch((error) => {
-          console.log(`.catch method caught an error!:`, error)
-        })
+        .then((data) => setTuneObject(data))
+        .catch((error) => console.log(`.catch method caught an error!`, error))
     }
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [params.tuneId])
 
-    const renderNotation = (element, tune) => {
-      let abc = tune.settings[tuneSetting].abc // TODO: user selects a preferred setting
+  useEffect(() => {
+    if (tuneObject) {
+      let abc = tuneObject.settings[tuneSetting].abc // TODO: user selects a preferred setting
       abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
       abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
       abcjs.renderAbc(
-        element,
-        `X:1\nT:${tune.name}\nK:${tune.settings[0].key}\n${abc}\n`,
+        "notation",
+        `X:1\nT:${tuneObject.name}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,
         {
           staffwidth: dimensions.width * 0.9,
           wrap: {
@@ -71,10 +68,7 @@ export default function TuneNotation(props) {
         }
       )
     }
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [params.tuneId, dimensions.width, tuneSetting])
+  }, [dimensions, tuneSetting, tuneObject])
 
   return params.tuneId ? (
     <div className="TuneNotation">
