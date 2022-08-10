@@ -10,7 +10,7 @@
   width: fit-content;
   flex-direction: column;
   padding: 10px;
-  margin: 10px;
+  margin: auto;
 }
 
 .FilterSelect .tune-type-select-container {

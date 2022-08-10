@@ -1,6 +1,8 @@
 import Pluralize from "pluralize"
 import { useState, useEffect } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 
 import FilterSelect from "../FilterSelect/FilterSelect"
 import TuneResult from "../TuneResult/TuneResult"
@@ -49,14 +51,15 @@ export default function HomePage({
   }, [page, setResultsList, filters])
 
   return (
-    <div className="Homepage scrollable">
-      <div className="discover-header d-flex">
+    <div className="HomePage">
+      <div className="discover-header">
         <h2>Discover tunes</h2>
         <button
           onClick={() => setShowFilterOptions(!showFilterOptions)}
-          className="btn btn-outline-success"
+          className="filters-expand-button btn"
         >
-          {showFilterOptions ? "hide filter" : "show filter"}
+          {showFilterOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          {showFilterOptions ? "hide filters" : "show filters"}
         </button>
       </div>
       {showFilterOptions && (
@@ -68,15 +71,20 @@ export default function HomePage({
         />
       )}
 
-      <div className="filters-verbose">
-        {filters.type !== "" ||
-          filters.mode.key !== "" ||
-          (filters.q !== "" && "Filtered results:")}
-        {"Found " + totalResults + " "}
-        {filters.type ? Pluralize(filters.type, 2) : "tunes"}
-        {filters.mode.key &&
-          " with settings in " + filters.mode.key + " " + filters.mode.modeType}
-        {":"}
+      <div className="filters-verbose d-flex">
+        <p>
+          {(filters.type !== "" ||
+            filters.mode.key !== "" ||
+            filters.q !== "") &&
+            "Filtered results: "}
+          {"Found " + totalResults + " "}
+          {filters.type ? Pluralize(filters.type, 2) : "tunes"}
+          {filters.mode.key &&
+            " with settings in " +
+              filters.mode.key +
+              " " +
+              (filters.mode.modeType || "major")}
+        </p>
       </div>
 
       <InfiniteScroll
