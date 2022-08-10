@@ -10,27 +10,31 @@ export default function TuneResult(props) {
   const navigate = useNavigate()
 
   const renderNotation = (element, tune) => {
-    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${tune.abc.slice(0, 30)}\n`, {
+    let incipit = /(^[^|]*[|][^|]*[|][^|]*[|][^|]*[|][^|]*\|)/.exec(tune.abc)[0]
+    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${incipit}\n`, {
       responsive: "resize",
+      lineBreaks: [5, 10]
     })
   }
 
   const filterByTuneType = (tuneType) => {
-    console.log(`Filter tunes: Show ${tuneType}s`)
     props.setFilters((prevFilters) => ({
       ...prevFilters,
       type: `${tuneType}`,
     }))
+    props.setResultsList([])
+    props.setPage(1)
   }
 
   const filterByKey = (tuneKey) => {
     let key = /([A-G][b#♭♯]*)/.exec(tuneKey)[0]
     let mode = tuneKey.slice(key.length)
-    console.log(`Setting filters to: Key ${key}, mode ${mode}`)
     props.setFilters((prevFilters) => ({
       ...prevFilters,
       mode: {key: key, modeType: mode},
     }))
+    props.setResultsList([])
+    props.setPage(1)
   }
 
   const handleClick = (event, callback, arg) => {
@@ -53,17 +57,13 @@ export default function TuneResult(props) {
 
     if (props.id) {
       fetch(url)
-        // .then((response) => catchError(response))
         .then((response) => response.json())
         .then((data) => {
-          // console.log(`Tune ${props.id} data:`, data)
-          // 'settings' here refers to the settings (variants) of a folk tune
           setTuneObject(data)
           renderNotation(`${props.id}incipit`, data.settings[0])
         })
         .catch((error) => {
           console.log(`.catch method caught an error!:`, error)
-          // setDeets('error')
         })
     }
   }, [props.id])

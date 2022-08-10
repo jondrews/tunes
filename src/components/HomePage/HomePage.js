@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ClearIcon from '@mui/icons-material/Clear';
 
 import FilterSelect from "../FilterSelect/FilterSelect"
 import TuneResult from "../TuneResult/TuneResult"
@@ -29,11 +30,9 @@ export default function HomePage({
         : ""
     }&q=${filters.q}`
     const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
-    console.log("API Call URL:", url)
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log("data from API", data)
         setTotalPages(data.pages)
         setTotalResults(data.total)
         if (page === 1) {
@@ -46,7 +45,7 @@ export default function HomePage({
         }
       })
       .catch((error) => {
-        console.log(error)
+        console.log("error caught on HomePage:", error)
       })
   }, [page, setResultsList, filters])
 
@@ -87,6 +86,24 @@ export default function HomePage({
         </p>
       </div>
 
+      {(filters.type !== "" || filters.mode.key !== "" || filters.q !== "") && (
+        <div className="clear-filters d-flex">
+          <button
+            className="clear-filters-button"
+            onClick={() =>
+              setFilters({
+                type: "",
+                mode: { key: "", modeType: "" },
+                q: "",
+                inTuneBook: false,
+              })
+            }
+          >
+            <ClearIcon /> clear filters
+          </button>
+        </div>
+      )}
+
       <InfiniteScroll
         dataLength={resultsList.length}
         next={() => setPage(page + 1)}
@@ -100,7 +117,7 @@ export default function HomePage({
           </p>
         }
       >
-        <div className="results d-flex flex-column align-items-center">
+        <div className="results">
           {resultsList.map((tune) => (
             <TuneResult
               key={tune.id}
@@ -113,6 +130,8 @@ export default function HomePage({
               toggleTuneBookEntry={toggleTuneBookEntry}
               filters={filters}
               setFilters={setFilters}
+              setResultsList={setResultsList}
+              setPage={setPage}
             />
           ))}
         </div>

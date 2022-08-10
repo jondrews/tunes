@@ -14,7 +14,6 @@ export default function FilterSelect({
   Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   const changeKey = (e) => {
-    console.log(`FilterSelect key button clicked: ${e.target.value}`)
     setFilters((prevFilters) => ({
       ...prevFilters,
       mode: { key: e.target.value, modeType: prevFilters.mode.modeType },
@@ -24,7 +23,6 @@ export default function FilterSelect({
   }
 
   const changeMode = (e) => {
-    console.log(`FilterSelect mode selected: ${e.target.value}`)
     setFilters((prevFilters) => ({
       ...prevFilters,
       mode: { key: prevFilters.mode.key, modeType: e.target.value },
@@ -34,7 +32,6 @@ export default function FilterSelect({
   }
 
   const changeType = (e) => {
-    console.log(`FilterSelect type selected: ${e.target.value}`)
     setFilters((prevFilters) => ({
       ...prevFilters,
       type: e.target.value,

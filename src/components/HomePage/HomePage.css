@@ -16,3 +16,24 @@
 .HomePage .filters-verbose p {
   margin: auto;
 }
+
+.HomePage .clear-filters-button {
+  margin: auto;
+  display: flex;
+  height: 2rem;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+.HomePage .clear-filters-button:focus {
+  border: 1px solid black;
+}
+.HomePage .clear-filters-button:hover {
+  font-weight: 600;
+}
+
+.HomePage .results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

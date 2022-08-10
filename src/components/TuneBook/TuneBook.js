@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import Button from "react-bootstrap/Button"
 import Offcanvas from "react-bootstrap/Offcanvas"
 
@@ -39,8 +40,8 @@ export default function TuneBook(props) {
   return (
     <div className="TuneBook">
       <div className="offcanvas-button d-lg-none col-1">
-        <Button variant="primary" className="d-lg-none" onClick={handleShow}>
-          Tunebook
+        <Button variant="primary" className="open-tunebook d-lg-none" onClick={handleShow}>
+          <ChevronRightIcon />open tunebook
         </Button>
       </div>
 

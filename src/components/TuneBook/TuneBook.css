@@ -3,6 +3,12 @@
   min-width: 250px;
 }
 
+.TuneBook .open-tunebook {
+  width: 10rem;
+  border-radius: 0px 10px 10px 0px;
+  padding: 5px 10px 5px 0px;
+}
+
 .TuneBook .tune-item, .offcanvas-body .tune-item {
   cursor: pointer;
   text-decoration: none;
