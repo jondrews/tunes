@@ -1,10 +1,16 @@
 import Pluralize from "pluralize"
+
 import notes from "../../notes.js"
 import modes from "../../modes.js"
 import types from "../../types.js"
 import "./FilterSelect.css"
 
-export default function FilterSelect({ filters, setFilters, setResultsList, setPage }) {
+export default function FilterSelect({
+  filters,
+  setFilters,
+  setResultsList,
+  setPage,
+}) {
   Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   const changeKey = (e) => {
@@ -26,7 +32,7 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
     setResultsList([])
     setPage(1)
   }
-  
+
   const changeType = (e) => {
     console.log(`FilterSelect type selected: ${e.target.value}`)
     setFilters((prevFilters) => ({
@@ -36,17 +42,17 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
     setResultsList([])
     setPage(1)
   }
-  
+
   return (
-    <div className="FilterSelect d-flex">
-      Show me &nbsp;
+    <div className="FilterSelect">
       <div className="tune-type-select-container">
+        <p className="tune-type-select-text">Show me</p>
         <select
           name="type-select"
           id="type-select"
           value={filters.type || ""}
           onChange={(e) => changeType(e)}
-          >
+        >
           <option value="">all tunes</option>
           {types.map((type) => (
             <option value={type} key={type}>
@@ -55,14 +61,19 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
           ))}
         </select>
       </div>
-      &nbsp; in &nbsp;
-      <div className="note-select-container d-flex">
+
+      <div className="note-select-container">
+        <p className="note-select-text">in the key of:</p>
         {notes.map((note, index) => (
           <div
             className={
               filters.mode.key === note
-                ? "note-select-div active-div"
-                : "note-select-div"
+                ? note.length === 1
+                  ? "note-select-div white-note active-div " + note
+                  : "note-select-div black-note active-div " + note
+                : note.length === 1
+                ? "note-select-div white-note " + note
+                : "note-select-div black-note " + note
             }
             key={note + index}
           >
@@ -70,15 +81,19 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
               type="radio"
               className={
                 filters.mode.key === note
-                  ? "note-select-button active-button"
-                  : "note-select-button"
+                  ? note.length === 1
+                  ? "note-select-button white-note-button active-button"
+                    : "note-select-button black-note-button active-button"
+                  : note.length === 1
+                  ? "note-select-button white-note-button"
+                  : "note-select-button black-note-button"
               }
               id={note}
               name="noteSelect"
               value={note}
               checked={filters.mode.key === note}
               onChange={(e) => changeKey(e)}
-            ></input>
+              ></input>
             <label
               htmlFor={note}
               className={
@@ -91,18 +106,17 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
             </label>
           </div>
         ))}
+      </div>
+
+      <div className="mode-select-container">
         <div
-          className={
-            filters.mode.key ? "note-select-div" : "note-select-div active-div"
-          }
+          className={filters.mode.key ? "anyKey-div" : "anyKey-div active-div"}
           key="anyKey"
         >
           <input
             type="radio"
             className={
-              filters.mode.key
-                ? "note-select-div"
-                : "note-select-div active-div"
+              filters.mode.key ? "anyKey-button" : "anyKey-button active-button"
             }
             id="anyKey"
             name="noteSelect"
@@ -113,16 +127,13 @@ export default function FilterSelect({ filters, setFilters, setResultsList, setP
           <label
             htmlFor="anyKey"
             className={
-              filters.mode.key
-                ? "note-select-div"
-                : "note-select-div active-div"
+              filters.mode.key ? "anyKey-label" : "anyKey-label active-label"
             }
           >
-            Any key
+            any key
           </label>
         </div>
-      </div>
-      <div className="mode-select-container">
+
         <select
           name="mode-select"
           id="mode-select"

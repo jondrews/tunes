@@ -1,0 +1,100 @@
+:root {
+  --white-width: 1.8rem;
+  --white-height: 5rem;
+  --black-width: 1.4rem;
+  --black-height: 3.2rem;
+}
+
+.FilterSelect {
+  display: flex;
+  width: fit-content;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+}
+
+.FilterSelect .tune-type-select-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+.FilterSelect .tune-type-select-text {
+  margin: 0px 5px 0px 0px;
+}
+
+/* NOTE SELECT (keyboard) */
+
+.FilterSelect .note-select-text {
+  margin: 0;
+}
+
+.FilterSelect .note-select-div {
+  float: left;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.FilterSelect .note-select-button {
+  opacity: 0;
+  position: fixed;
+}
+.FilterSelect .white-note-button {
+  height: var(--white-height);
+  width: var(--white-width);
+}
+.FilterSelect .black-note-button {
+  height: var(--black-height);
+  width: var(--black-width);
+}
+
+.FilterSelect .white-note {
+  height: var(--white-height);
+  width: var(--white-width);
+  z-index: 1;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  background-color: #cbcbcb;
+}
+.FilterSelect .white-note.active-div {
+  background-color: rgb(223, 0, 0);
+}
+
+.FilterSelect .black-note {
+  height: var(--black-height);
+  width: var(--black-width);
+  z-index: 2;
+  border: 1px solid black;
+  background-color: #222222;
+  color: white;
+}
+.FilterSelect .black-note.active-div {
+  background-color: rgb(177, 0, 0);
+}
+
+.FilterSelect .D,
+.FilterSelect .E,
+.FilterSelect .G,
+.FilterSelect .A,
+.FilterSelect .B,
+.FilterSelect .black-note {
+  margin: 0 0 0 calc(var(--black-width) * -0.5);
+}
+
+.FilterSelect .note-select-container > .white-note:last-child {
+  border-right: 1px solid gray;
+}
+
+/* MODE SELECT */
+
+.FilterSelect .mode-select-container {
+  display: flex;
+  align-items: baseline;
+  margin-top: 5px;
+}
+
+.anyKey-div {
+  margin: 0px 2rem 0px 5px;
+}

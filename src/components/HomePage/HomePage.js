@@ -1,4 +1,4 @@
-import React from "react"
+import Pluralize from "pluralize"
 import { useState, useEffect } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 
@@ -18,6 +18,7 @@ export default function HomePage({
   const [totalResults, setTotalResults] = useState(0)
   const [page, setPage] = useState(1)
   const [showFilterOptions, setShowFilterOptions] = useState(false)
+  Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   useEffect(() => {
     const filterString = `type=${filters.type}&mode=${
@@ -66,39 +67,20 @@ export default function HomePage({
           setPage={setPage}
         />
       )}
-      {/* <div className="results d-flex flex-column align-items-center">
-        {resultsList.map((tune) => (
-          <TuneResult
-            key={tune.id}
-            id={tune.id}
-            title={tune.name}
-            popularity={tune.tunebooks}
-            tuneType={tune.type}
-            date={tune.date}
-            tuneBook={tuneBook}
-            toggleTuneBookEntry={toggleTuneBookEntry}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        ))}
 
-        <div className="more-results m-3 d-flex flex-column align-items-center">
-          Showing {resultsList.length} out of {totalResults} tunes found
-          <div
-            className="more-results-button btn btn-outline-primary"
-            onClick={() => {
-              if (page < totalPages) {
-                setPage(page + 1)
-              }
-            }}
-          >
-            Show more
-          </div>
-        </div>
-      </div> */}
-      {totalResults} tunes found
+      <div className="filters-verbose">
+        {filters.type !== "" ||
+          filters.mode.key !== "" ||
+          (filters.q !== "" && "Filtered results:")}
+        {"Found " + totalResults + " "}
+        {filters.type ? Pluralize(filters.type, 2) : "tunes"}
+        {filters.mode.key &&
+          " with settings in " + filters.mode.key + " " + filters.mode.modeType}
+        {":"}
+      </div>
+
       <InfiniteScroll
-        dataLength={resultsList.length} //This is important field to render the next data
+        dataLength={resultsList.length}
         next={() => setPage(page + 1)}
         hasMore={page < totalPages}
         loader={<h4>Loading...</h4>}
@@ -109,16 +91,6 @@ export default function HomePage({
             </b>
           </p>
         }
-        // below props only if you need pull down functionality
-        // refreshFunction={this.refresh}
-        // pullDownToRefresh
-        // pullDownToRefreshThreshold={50}
-        // pullDownToRefreshContent={
-        //   <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-        // }
-        // releaseToRefreshContent={
-        //   <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-        // }
       >
         <div className="results d-flex flex-column align-items-center">
           {resultsList.map((tune) => (
