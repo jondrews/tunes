@@ -36,7 +36,7 @@ export default function TuneNotation(props) {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize)
-
+    handleResize()
     const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
     if (params.tuneId) {
       setTuneSetting(0)
