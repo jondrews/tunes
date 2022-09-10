@@ -30,10 +30,32 @@ export default function HomePage({
         : ""
     }&q=${filters.q}`
     const url = `https://thesession.org/tunes/search?${filterString}&perpage=20&page=${page}&format=json`
+    let noResults = false
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setTotalPages(data.pages)
+        const numFilteredResults = data.total
+        if (numFilteredResults > 1000) {
+          /* Check if number of results equals the size of the entire archive
+            (this means the server found NO RESULTS for the given filters) */
+          const entireArchiveUrl =
+            "https://thesession.org/tunes/search?format=json"
+          fetch(entireArchiveUrl)
+            .then((entireArchive) => entireArchive.json())
+            .then((entireArchiveData) => {
+              console.log("Entire archive size is:", entireArchiveData.total)
+              console.log("Size of filtered results is:", numFilteredResults)
+              noResults =
+                numFilteredResults === entireArchiveData.total &&
+                (filters.type || filters.mode.key || filters.q)
+              console.log(noResults 
+                ? 'NO RESULTS' 
+                : filters.type || filters.mode.key || filters.q
+                  ? 'Found some results with filters set'
+                  : 'Showing entire archive')
+            })
+        }
+        setTotalPages(numFilteredResults)
         setTotalResults(data.total)
         if (page === 1) {
           setResultsList(data.tunes)
