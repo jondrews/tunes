@@ -53,8 +53,10 @@ export default function TuneNotation(props) {
   useEffect(() => {
     if (tuneObject) {
       let abc = tuneObject.settings[tuneSetting].abc // TODO: user selects a preferred setting
-      abc = abc.replace(/\|!/g, "|") // remove erroneous exclamation marks
-      abc = abc.replace(/:\| \|:/g, "::") // remove double barline spaces
+      abc = abc.replace(/\|!/g, "|") // remove thesession.org's custom pagination (exclamation marks)
+      abc = abc.replace(/:\| \|:/g, ":||:") // remove double barline spaces
+      abc = abc.replace(/(K:[a-zA-Z\s]*)!/g, "[$1]") // deal with inline key signature changes
+      console.log("abc notation:", abc)
       abcjs.renderAbc(
         "notation",
         `X:1\nT:${tuneObject.name}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,

@@ -79,7 +79,7 @@ export default function FilterSelect({
               className={
                 filters.mode.key === note
                   ? note.length === 1
-                  ? "note-select-button white-note-button active-button"
+                    ? "note-select-button white-note-button active-button"
                     : "note-select-button black-note-button active-button"
                   : note.length === 1
                   ? "note-select-button white-note-button"
@@ -90,7 +90,7 @@ export default function FilterSelect({
               value={note}
               checked={filters.mode.key === note}
               onChange={(e) => changeKey(e)}
-              ></input>
+            ></input>
             <label
               htmlFor={note}
               className={

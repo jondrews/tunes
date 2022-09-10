@@ -1,70 +1,14 @@
-# Getting Started with Create React App
+# 🎻Tunes!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### GA React Development course - final project
+#### Jon Drews - 2022-08-10
 
-## Available Scripts
+An app for discovering, collecting and learning Irish traditional music. Made by a musician, for musicians :)
 
-In the project directory, you can run:
+![App screenshot](./tunes-screenshot.png)
 
-### `npm start`
+### Notes
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This app uses data from an API provided by [thesession.org](https://thesession.org/). Tune 'settings' (variants of the same tune) are provided in [ABC notation](https://abcnotation.com/) from thesession.org, and are parsed in my app for display in SVG format using the [abcjs library](https://www.abcjs.net/).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Many key/mode-based search results may appear erroneous** - for example, searching for tunes in 'C major' may return results for tunes in 'G major' or other seemingly erroneous keys. This is because each search result is a tune that has at least one setting in the requested key/mode - this setting may not necessarily be the primary (first) setting, which is the one displayed on the list of results. Click on the search result, then browse through all the different settings of the tune to find the setting(s) with a key that matches the key you searched for. Future updates will attempt to list only the specific tune settings that match the search key/mode, to avoid this confusion.

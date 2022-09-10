@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import MenuBookIcon from '@mui/icons-material/MenuBook'
+import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
 
 import "./TuneResult.css"
@@ -13,7 +13,8 @@ export default function TuneResult(props) {
     let incipit = /(^[^|]*[|][^|]*[|][^|]*[|][^|]*[|][^|]*\|)/.exec(tune.abc)[0]
     abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${incipit}\n`, {
       responsive: "resize",
-      lineBreaks: [5, 10]
+      lineBreaks: [5, 10],
+      paddingtop: 0,
     })
   }
 
@@ -27,11 +28,11 @@ export default function TuneResult(props) {
   }
 
   const filterByKey = (tuneKey) => {
-    let key = /([A-G][b#♭♯]*)/.exec(tuneKey)[0]
-    let mode = tuneKey.slice(key.length)
+    const key = /([A-G][b#♭♯]*)/.exec(tuneKey)[0]
+    const mode = tuneKey.slice(key.length)
     props.setFilters((prevFilters) => ({
       ...prevFilters,
-      mode: {key: key, modeType: mode},
+      mode: { key: key, modeType: mode },
     }))
     props.setResultsList([])
     props.setPage(1)
@@ -47,8 +48,9 @@ export default function TuneResult(props) {
   }
 
   const isInTuneBook = (tuneId) => {
-    return props.tuneBook && props.tuneBook.some(
-      (bookEntry) => bookEntry.tuneObject.id === tuneId
+    return (
+      props.tuneBook &&
+      props.tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
     )
   }
 
@@ -73,58 +75,59 @@ export default function TuneResult(props) {
       className="TuneResult mt-2 d-flex flex-column"
       onClick={() => navigate(`/tune/${props.id}`)}
     >
-      <div className="tune-info d-flex">
+      <div className="tune-info d-flex flex-column">
         {tuneObject ? (
-          <div className="tune-title flex-grow-1">
-            <h4>{props.title}</h4>
-          </div>
+          <>
+            <div className="tune-title d-flex">
+              <h4 className="p-0 m-0">{props.title}</h4>
+
+              <button
+                className="add-to-tunebook"
+                onClick={(event) =>
+                  handleClick(event, props.toggleTuneBookEntry, {
+                    tuneObject: tuneObject,
+                    dateAdded: Date.now(),
+                  })
+                }
+              >
+                <MenuBookIcon />
+                {isInTuneBook(tuneObject.id) ? " Remove" : " Add"}
+              </button>
+            </div>
+
+            <div className="tune-filters">
+              <button
+                className="tune-type"
+                onClick={(event) =>
+                  handleClick(event, filterByTuneType, props.tuneType)
+                }
+              >
+                {props.tuneType.replace(/\b\w/, (c) => c.toUpperCase())}
+              </button>
+
+              <span className="tune-in">in</span>
+
+              <button
+                className="tune-key"
+                onClick={(event) =>
+                  handleClick(event, filterByKey, tuneObject.settings[0].key)
+                }
+              >
+                {tuneObject.settings[0].key.replace(
+                  /([A-Ga-g][b♭#♯]{0,2})(\s*)([A-Za-z]*)/,
+                  "$1 $3"
+                )}
+              </button>
+            </div>
+          </>
         ) : (
           <div className="tune-title flex-grow-1">
             <p>Loading...</p>
           </div>
         )}
-
-        {tuneObject && (
-          <div
-            className="tune-type"
-            onClick={(event) =>
-              handleClick(event, filterByTuneType, props.tuneType)
-            }
-          >
-            {props.tuneType}
-          </div>
-        )}
-
-        {tuneObject && (
-          <div
-            className="tune-key"
-            onClick={(event) =>
-              handleClick(event, filterByKey, tuneObject.settings[0].key)
-            }
-          >
-            {tuneObject.settings[0].key}
-          </div>
-        )}
       </div>
 
       <div className="tune-incipit" id={props.id + "incipit"}></div>
-
-      {tuneObject && (
-        <div className="actions d-flex flex-row-reverse">
-          <span
-            className="add-to-tunebook btn btn-outline-danger"
-            onClick={(event) =>
-              handleClick(event, props.toggleTuneBookEntry, {
-                tuneObject: tuneObject,
-                dateAdded: Date.now(),
-              })
-            }
-          >
-            <MenuBookIcon />
-            {isInTuneBook(tuneObject.id) ? "Remove" : "Add"}
-          </span>
-        </div>
-      )}
     </div>
   )
 }

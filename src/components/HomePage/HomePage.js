@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear"
 
 import FilterSelect from "../FilterSelect/FilterSelect"
 import TuneResult from "../TuneResult/TuneResult"
@@ -90,14 +90,16 @@ export default function HomePage({
         <div className="clear-filters d-flex">
           <button
             className="clear-filters-button"
-            onClick={() =>
+            onClick={() => {
               setFilters({
                 type: "",
                 mode: { key: "", modeType: "" },
                 q: "",
                 inTuneBook: false,
               })
-            }
+              setResultsList([])
+              setPage(1)
+            }}
           >
             <ClearIcon /> clear filters
           </button>
