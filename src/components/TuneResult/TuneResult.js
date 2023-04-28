@@ -1,16 +1,25 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
 
+import parseABC from "../../parseABC"
 import "./TuneResult.css"
 
-export default function TuneResult(props) {
-  const [tuneObject, setTuneObject] = useState()
+export default function TuneResult({
+  tune,
+  tuneBook,
+  toggleTuneBookEntry,
+  filters,
+  setFilters,
+  setResultsList,
+  setPage,
+}) {
+  // const [tuneObject, setTuneObject] = useState()
   const navigate = useNavigate()
 
   const renderNotation = (element, tune) => {
-    let incipit = /(^[^|]*[|][^|]*[|][^|]*[|][^|]*[|][^|]*\|)/.exec(tune.abc)[0]
+    const incipit = /^([^|])*\|([^|]*\|){1,4}/.exec(parseABC(tune.abc))[0]
     abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${incipit}\n`, {
       responsive: "resize",
       lineBreaks: [5, 10],
@@ -19,23 +28,23 @@ export default function TuneResult(props) {
   }
 
   const filterByTuneType = (tuneType) => {
-    props.setFilters((prevFilters) => ({
+    setFilters((prevFilters) => ({
       ...prevFilters,
       type: `${tuneType}`,
     }))
-    props.setResultsList([])
-    props.setPage(1)
+    setResultsList([])
+    setPage(1)
   }
 
   const filterByKey = (tuneKey) => {
     const key = /([A-G][b#♭♯]*)/.exec(tuneKey)[0]
     const mode = tuneKey.slice(key.length)
-    props.setFilters((prevFilters) => ({
+    setFilters((prevFilters) => ({
       ...prevFilters,
       mode: { key: key, modeType: mode },
     }))
-    props.setResultsList([])
-    props.setPage(1)
+    setResultsList([])
+    setPage(1)
   }
 
   const handleClick = (event, callback, arg) => {
@@ -49,49 +58,38 @@ export default function TuneResult(props) {
 
   const isInTuneBook = (tuneId) => {
     return (
-      props.tuneBook &&
-      props.tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
+      tuneBook &&
+      tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
     )
   }
 
   useEffect(() => {
-    const url = `https://thesession.org/tunes/${props.id}?format=json`
+    renderNotation(`${tune.id}incipit`, tune.settings[0])
 
-    if (props.id) {
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          setTuneObject(data)
-          renderNotation(`${props.id}incipit`, data.settings[0])
-        })
-        .catch((error) => {
-          console.log(`.catch method caught an error!:`, error)
-        })
-    }
-  }, [props.id])
+  }, [tune.id, tune.settings])
 
   return (
     <div
       className="TuneResult mt-2 d-flex flex-column"
-      onClick={() => navigate(`/tune/${props.id}`)}
+      onClick={() => navigate(`/tune/${tune.id}`)}
     >
       <div className="tune-info d-flex flex-column">
-        {tuneObject ? (
+        {tune ? (
           <>
             <div className="tune-title d-flex">
-              <h4 className="p-0 m-0">{props.title}</h4>
+              <h4 className="p-0 m-0">{tune.name}</h4>
 
               <button
                 className="add-to-tunebook"
                 onClick={(event) =>
-                  handleClick(event, props.toggleTuneBookEntry, {
-                    tuneObject: tuneObject,
+                  handleClick(event, toggleTuneBookEntry, {
+                    tuneObject: tune,
                     dateAdded: Date.now(),
                   })
                 }
               >
                 <MenuBookIcon />
-                {isInTuneBook(tuneObject.id) ? " Remove" : " Add"}
+                {isInTuneBook(tune.id) ? " Remove" : " Add"}
               </button>
             </div>
 
@@ -99,10 +97,10 @@ export default function TuneResult(props) {
               <button
                 className="tune-type"
                 onClick={(event) =>
-                  handleClick(event, filterByTuneType, props.tuneType)
+                  handleClick(event, filterByTuneType, tune.type)
                 }
               >
-                {props.tuneType.replace(/\b\w/, (c) => c.toUpperCase())}
+                {tune.type.replace(/\b\w/, (c) => c.toUpperCase())}
               </button>
 
               <span className="tune-in">in</span>
@@ -110,14 +108,16 @@ export default function TuneResult(props) {
               <button
                 className="tune-key"
                 onClick={(event) =>
-                  handleClick(event, filterByKey, tuneObject.settings[0].key)
+                  handleClick(event, filterByKey, tune.settings[0].key)
                 }
               >
-                {tuneObject.settings[0].key.replace(
+                {tune.settings[0].key.replace(
                   /([A-Ga-g][b♭#♯]{0,2})(\s*)([A-Za-z]*)/,
                   "$1 $3"
                 )}
               </button>
+
+              <span className="tune-id"> #{tune.id}</span>
             </div>
           </>
         ) : (
@@ -127,7 +127,7 @@ export default function TuneResult(props) {
         )}
       </div>
 
-      <div className="tune-incipit" id={props.id + "incipit"}></div>
+      <div className="tune-incipit" id={tune.id + "incipit"}></div>
     </div>
   )
 }

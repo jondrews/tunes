@@ -10,14 +10,16 @@ export default function FilterSelect({
   setFilters,
   setResultsList,
   setPage,
+  controller,
 }) {
   Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   const changeKey = (e) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      mode: { key: e.target.value, modeType: prevFilters.mode.modeType },
+      mode: { ...prevFilters.mode, key: e.target.value },
     }))
+    console.log(`KEY FILTER changed to ${e.target.value}. new filters:`, filters)
     setResultsList([])
     setPage(1)
   }

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import HomePage from "./components/HomePage/HomePage"
 import PageNotFound from "./components/PageNotFound/PageNotFound"
@@ -12,11 +12,18 @@ import "./App.css"
 const App = () => {
   const [resultsList, setResultsList] = useState([]) // array of Objects
   const [tuneBook, setTuneBook] = useState([]) // array of Objects
+  const [practiceDiary, setPracticeDiary] = useState([]) // array of Objects
+  const [preferredSettings, setPreferredSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
   const [filters, setFilters] = useState({
     type: "",
     mode: { key: "", modeType: "" },
     q: "",
     inTuneBook: false,
+    showTransposedTunes: false,
+  })
+  const [userPrefs, setUserPrefs] = useState({
+    thesessionMemberId: 151540,
+    showOnlyPrimarySettings: true, // only return a tune result if its FIRST setting matches the filters (otherwise return the tune result if ANY setting matches filters)
   })
 
   const isInTuneBook = (lookFor) => {
@@ -43,6 +50,36 @@ const App = () => {
     }
   }
 
+  const managePreferredSettings = (action, tuneId, settingId = -1) => {
+    if (action === "set" && settingId >= 0) {
+      const newSettings = { ...preferredSettings, [tuneId]: settingId }
+      setPreferredSettings(newSettings)
+    }
+    if (action === "remove") {
+      const newSettings = { ...preferredSettings }
+      delete newSettings[tuneId]
+      setPreferredSettings(newSettings)
+    }
+  }
+
+  useEffect(() => {
+    console.log('Loading preferredSettings from localStorage')
+    const savedPreferredSettings = JSON.parse(
+      localStorage.getItem("preferredSettings")
+    )
+    if (savedPreferredSettings) {
+      console.log('Loaded preferredSettings:', savedPreferredSettings)
+      setPreferredSettings(savedPreferredSettings)
+    } else {
+      console.log('No saved preferredSettings found')
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('Saving preferredSettings as:', preferredSettings)
+    localStorage.setItem("preferredSettings", JSON.stringify(preferredSettings))
+  }, [preferredSettings])
+
   return (
     <div className="App" data-testid="App">
       <BrowserRouter>
@@ -61,6 +98,12 @@ const App = () => {
                 setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                setPracticeDiary={setPracticeDiary}
+                preferredSettings={preferredSettings}
+                managePreferredSettings={managePreferredSettings}
               />
             }
           />
@@ -71,6 +114,16 @@ const App = () => {
               <TuneNotation
                 tuneBook={tuneBook}
                 toggleTuneBookEntry={toggleTuneBookEntry}
+                resultsList={resultsList}
+                setResultsList={setResultsList}
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                setPracticeDiary={setPracticeDiary}
+                preferredSettings={preferredSettings}
+                managePreferredSettings={managePreferredSettings}
               />
             }
           >
@@ -80,6 +133,16 @@ const App = () => {
                 <TuneNotation
                   tuneBook={tuneBook}
                   toggleTuneBookEntry={toggleTuneBookEntry}
+                  resultsList={resultsList}
+                  setResultsList={setResultsList}
+                  filters={filters}
+                  setFilters={setFilters}
+                  userPrefs={userPrefs}
+                  setUserPrefs={setUserPrefs}
+                  practiceDiary={practiceDiary}
+                  setPracticeDiary={setPracticeDiary}
+                  preferredSettings={preferredSettings}
+                  managePreferredSettings={managePreferredSettings}
                 />
               }
             />
@@ -91,6 +154,16 @@ const App = () => {
               <TuneBook
                 tuneBook={tuneBook}
                 toggleTuneBookEntry={toggleTuneBookEntry}
+                resultsList={resultsList}
+                setResultsList={setResultsList}
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                setPracticeDiary={setPracticeDiary}
+                preferredSettings={preferredSettings}
+                managePreferredSettings={managePreferredSettings}
               />
             }
           >
@@ -100,6 +173,16 @@ const App = () => {
                 <TuneNotation
                   tuneBook={tuneBook}
                   toggleTuneBookEntry={toggleTuneBookEntry}
+                  resultsList={resultsList}
+                  setResultsList={setResultsList}
+                  filters={filters}
+                  setFilters={setFilters}
+                  userPrefs={userPrefs}
+                  setUserPrefs={setUserPrefs}
+                  practiceDiary={practiceDiary}
+                  setPracticeDiary={setPracticeDiary}
+                  preferredSettings={preferredSettings}
+                  managePreferredSettings={managePreferredSettings}
                 />
               }
             />
@@ -111,6 +194,16 @@ const App = () => {
               <Practice
                 tuneBook={tuneBook}
                 toggleTuneBookEntry={toggleTuneBookEntry}
+                resultsList={resultsList}
+                setResultsList={setResultsList}
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                setPracticeDiary={setPracticeDiary}
+                preferredSettings={preferredSettings}
+                managePreferredSettings={managePreferredSettings}
               />
             }
           />
