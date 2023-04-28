@@ -16,7 +16,7 @@ export default function Navigation(props) {
       className="Navigation"
     >
       <Container>
-        <Navbar.Brand href="/">
+        <Navbar.Brand>
           <img
             alt="Violin"
             src="/violin.png"
@@ -24,7 +24,9 @@ export default function Navigation(props) {
             height="30"
             className="d-inline-block align-top"
           />
-          Tunes!
+          <NavLink to="/" className="nav-link d-inline-block">
+            Tunes!
+          </NavLink>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -40,9 +42,9 @@ export default function Navigation(props) {
                 ""
               )}
             </NavLink>
-            {/* <NavLink to="/practice" className="nav-link">
+            <NavLink to="/practice" className="nav-link">
               Practice
-            </NavLink> */}
+            </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>

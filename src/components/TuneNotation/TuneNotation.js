@@ -4,17 +4,27 @@ import abcjs from "abcjs"
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
+import Pluralize from "pluralize"
 
+import parseABC from "../../parseABC"
 import "./TuneNotation.css"
 
-export default function TuneNotation(props) {
+export default function TuneNotation({
+  tuneBook,
+  toggleTuneBookEntry,
+  practiceDiary,
+  setPracticeDiary,
+  preferredSettings,
+  setPreferredSettings,
+  managePreferredSettings,
+}) {
+  let params = useParams()
   const [tuneObject, setTuneObject] = useState()
   const [tuneSetting, setTuneSetting] = useState(0)
   const [dimensions, setDimensions] = useState({
     height: 750,
     width: 750,
   })
-  let params = useParams()
 
   const handleResize = () => {
     setDimensions({
@@ -29,8 +39,8 @@ export default function TuneNotation(props) {
 
   const isInTuneBook = (tuneId) => {
     return (
-      props.tuneBook &&
-      props.tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
+      tuneBook &&
+      tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
     )
   }
 
@@ -39,24 +49,28 @@ export default function TuneNotation(props) {
     handleResize()
     const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
     if (params.tuneId) {
-      setTuneSetting(0)
+      // check if user has a preferred setting for this tune
+      setTuneSetting(preferredSettings[params.tuneId] || 0)
       fetch(url)
         .then((response) => response.json())
-        .then((data) => setTuneObject(data))
+        .then((data) => {
+          setTuneObject(data)
+          console.log(`tuneObject for tune ${params.tuneId}:`, data)
+        })
         .catch((error) => console.log(`.catch method caught an error!`, error))
     }
     return () => {
       window.removeEventListener("resize", handleResize)
     }
-  }, [params.tuneId])
+  }, [params.tuneId, preferredSettings])
 
   useEffect(() => {
     if (tuneObject) {
-      let abc = tuneObject.settings[tuneSetting].abc // TODO: user selects a preferred setting
-      abc = abc.replace(/\|!/g, "|") // remove thesession.org's custom pagination (exclamation marks)
-      abc = abc.replace(/:\| \|:/g, ":||:") // remove double barline spaces
-      abc = abc.replace(/(K:[a-zA-Z\s]*)!/g, "[$1]") // deal with inline key signature changes
-      console.log("abc notation:", abc)
+      let abc = parseABC(tuneObject.settings[tuneSetting].abc)
+      console.log(
+        `abc notation for tune ${tuneObject.id} setting ${tuneSetting}:\n`,
+        abc
+      )
       abcjs.renderAbc(
         "notation",
         `X:1\nT:${tuneObject.name}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,
@@ -74,40 +88,81 @@ export default function TuneNotation(props) {
 
   return params.tuneId ? (
     <div className="TuneNotation">
-      {tuneObject && tuneObject.settings.length > 1 && (
+      {tuneObject && tuneObject.settings && (
         <div className="settings-select-container">
           <p className="settings-total-text">
-            This tune has {tuneObject.settings.length} settings
+            This tune has {tuneObject.settings.length}{" "}
+            {Pluralize("setting", tuneObject.settings.length)}
           </p>
-          <div className="settings-select-action">
-            <button
-              className="settings-select-button"
-              onClick={() =>
-                setTuneSetting(
-                  tuneSetting > 0
-                    ? tuneSetting - 1
-                    : tuneObject.settings.length - 1
-                )
-              }
+          {tuneObject.settings.length > 1 && (
+            <div className="settings-select-action">
+              <button
+                className="settings-select-button"
+                onClick={() =>
+                  setTuneSetting(
+                    tuneSetting > 0
+                      ? tuneSetting - 1
+                      : tuneObject.settings.length - 1
+                  )
+                }
+              >
+                <ChevronLeftIcon />
+              </button>
+              <p className="settings-select-text">
+                Showing setting #{tuneSetting + 1}
+              </p>
+              <button
+                className="settings-select-button"
+                onClick={() =>
+                  setTuneSetting(
+                    tuneSetting < tuneObject.settings.length - 1
+                      ? tuneSetting + 1
+                      : 0
+                  )
+                }
+              >
+                <ChevronRightIcon />
+              </button>
+            </div>
+          )}
+          <div className="setting-author">
+            Setting by:{" "}
+            <a
+              href={tuneObject.settings[tuneSetting].member.url}
+              target="_blank"
+              rel="noreferrer"
             >
-              <ChevronLeftIcon />
-            </button>
-            <p className="settings-select-text">
-              Showing setting #{tuneSetting + 1}
-            </p>
-            <button
-              className="settings-select-button"
-              onClick={() =>
-                setTuneSetting(
-                  tuneSetting < tuneObject.settings.length - 1
-                    ? tuneSetting + 1
-                    : 0
-                )
-              }
-            >
-              <ChevronRightIcon />
-            </button>
+              {tuneObject.settings[tuneSetting].member.name}
+            </a>
           </div>
+          {preferredSettings[params.tuneId] === tuneSetting ? (
+            <div className="setting-preference">
+              <span>This is your preferred setting </span>
+              <button
+                size="sm"
+                className="preferred-setting btn btn-sm btn-outline-secondary"
+                onClick={() => {
+                  managePreferredSettings("remove", tuneObject.id)
+                  setTuneSetting(tuneSetting)
+                }}
+              >
+                Clear
+              </button>
+            </div>
+          ) : (
+            <div className="setting-preference">
+              <button
+                size="sm"
+                className="preferred-setting btn btn-sm btn-outline-secondary"
+                onClick={() => {
+                  managePreferredSettings("set", tuneObject.id, tuneSetting)
+                  setTuneSetting(tuneSetting)
+                }}
+              >
+                Set as preferred setting
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -118,7 +173,7 @@ export default function TuneNotation(props) {
           <button
             className="add-to-tunebook btn btn-outline-danger"
             onClick={() => {
-              props.toggleTuneBookEntry({
+              toggleTuneBookEntry({
                 tuneObject: tuneObject,
                 dateAdded: Date.now(),
               })
@@ -130,7 +185,7 @@ export default function TuneNotation(props) {
         )}
       </div>
     </div>
-  ) : props.tuneBook.length > 0 ? (
+  ) : tuneBook.length > 0 ? (
     <div className="select-from-tunebook">
       <h2>Select a tune</h2>
       <p>from the tunebook menu on the left</p>
