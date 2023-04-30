@@ -1,0 +1,41 @@
+.UserPrefs .settings-list {
+  list-style-type: none;
+}
+
+.UserPrefs .settings-list.loaded {
+  cursor: pointer;
+  text-decoration: none;
+}
+.UserPrefs .settings-list.loaded:hover {
+  background: var(--bg-hover);
+}
+
+.UserPrefs .settings-list.loaded .tune-name {
+  font-size: medium;
+  display: inline-block;
+}
+
+.UserPrefs .settings-list.loading {
+  color: grey;
+}
+
+.UserPrefs .tuneId {
+  color: grey;
+  font-size: smaller;
+}
+
+.UserPrefs .remove-tune-setting {
+  color: red;
+  background: var(--bg-muted);
+  font-size: smaller;
+  border-radius: 50%;
+  border: none;
+  font-weight: 400;
+}
+.UserPrefs .remove-tune-setting:after {
+  display: inline-block;
+  content: "\00d7"; /* Renders an 'x' */
+}
+.UserPrefs .remove-tune-setting:hover {
+  font-weight: 600;
+}

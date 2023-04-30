@@ -131,6 +131,7 @@ export default function TuneNotation({
               href={tuneObject.settings[tuneSetting].member.url}
               target="_blank"
               rel="noreferrer"
+              className="thesession-member-link"
             >
               {tuneObject.settings[tuneSetting].member.name}
             </a>

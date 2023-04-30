@@ -25,3 +25,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.thesession-member-link {
+  text-decoration: none;
+}

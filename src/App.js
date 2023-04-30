@@ -7,6 +7,7 @@ import TuneNotation from "./components/TuneNotation/TuneNotation"
 import TuneBook from "./components/TuneBook/TuneBook"
 import Navigation from "./components/Navigation/Navigation"
 import Practice from "./components/Practice/Practice"
+import UserPrefs from "./components/UserPrefs/UserPrefs"
 import "./App.css"
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
   const [tuneBook, setTuneBook] = useState([]) // array of Objects
   const [practiceDiary, setPracticeDiary] = useState([]) // array of Objects
   const [preferredSettings, setPreferredSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
+  const [prefSettingsLoaded, setPrefSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
   const [filters, setFilters] = useState({
     type: "",
     mode: { key: "", modeType: "" },
@@ -73,12 +75,15 @@ const App = () => {
     } else {
       console.log('No saved preferredSettings found')
     }
+    setPrefSettingsLoaded(true)
   }, [])
 
   useEffect(() => {
-    console.log('Saving preferredSettings as:', preferredSettings)
-    localStorage.setItem("preferredSettings", JSON.stringify(preferredSettings))
-  }, [preferredSettings])
+    if (prefSettingsLoaded) {
+      console.log('Saving preferredSettings as:', preferredSettings)
+      localStorage.setItem("preferredSettings", JSON.stringify(preferredSettings))
+    }
+  }, [preferredSettings, prefSettingsLoaded])
 
   return (
     <div className="App" data-testid="App">
@@ -192,6 +197,26 @@ const App = () => {
             path="/practice"
             element={
               <Practice
+                tuneBook={tuneBook}
+                toggleTuneBookEntry={toggleTuneBookEntry}
+                resultsList={resultsList}
+                setResultsList={setResultsList}
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                setPracticeDiary={setPracticeDiary}
+                preferredSettings={preferredSettings}
+                managePreferredSettings={managePreferredSettings}
+              />
+            }
+          />
+
+          <Route
+            path="/prefs"
+            element={
+              <UserPrefs
                 tuneBook={tuneBook}
                 toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
