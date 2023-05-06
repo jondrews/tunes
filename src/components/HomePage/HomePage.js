@@ -162,6 +162,11 @@ export default function HomePage({
           setResultsStatus("error")
         })
     }
+    /* Suppress ESLINT warning to add 'resultsStatus' to dependecies array.
+       Adding this would cause an infinite loop when, eg, resultsStatus 
+       is set to 'results found'...  
+    */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, filters, filterString, checkResults])
 
   return (

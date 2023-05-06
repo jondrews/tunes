@@ -16,7 +16,6 @@ const App = () => {
   const [preferredTuneSettings, setPreferredTuneSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
   const [prefTuneSettingsLoaded, setPrefTuneSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
   const [userPrefs, setUserPrefs] = useState({})
-  const [userPrefsLoaded, setUserPrefsLoaded] = useState(false)
   const [practiceDiaryLoaded, setPracticeDiaryLoaded] = useState(false)
   const [filters, setFilters] = useState({
     type: "",
@@ -149,32 +148,21 @@ const App = () => {
       setUserPrefs(defaultUserPrefs)
     }
     console.groupEnd()
-    setUserPrefsLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // const saveUserPrefs = () => {
-  //   console.group("saveUserPrefs:")
-  //   console.log("Saving userPrefs as:", userPrefs)
-  //   localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
-  //   console.groupEnd()
-  // }
-
-  // useEffect(() => {
-  //   // if (userPrefsLoaded) {
-  //   //   if (userPrefsListHasChanged()) {
-  //   //     console.log("Not saving userPrefs because its size has changed")
-  //   //   } else {
-  //   //     console.log("Saving userPrefs as:", userPrefs)
-  //   //     localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
-  //   //   }
-  //   // }
-  //   saveUserPrefs()
-  // }, [userPrefs])
+  /*
+  const saveUserPrefs = () => {
+    console.group("saveUserPrefs:")
+    console.log("Saving userPrefs as:", userPrefs)
+    localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
+    console.groupEnd()
+  }
 
   const updateUserPref = (key, value) => {
     setUserPrefs((prevPrefs) => ({ ...prevPrefs, [key]: value }))
   }
+  */
 
   useEffect(() => {
     console.log("Loading practiceDiary from localStorage")
