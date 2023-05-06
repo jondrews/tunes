@@ -1,3 +1,13 @@
+.tune-selection .expandible {
+  width: 100%;
+  color: red;
+  min-width: 250px;
+}
+
+.expandible-header {
+  font-size: smaller;
+}
+
 .TuneBook .tune-selection {
   width: 25%;
   min-width: 250px;
@@ -20,6 +30,10 @@
 }
 .TuneBook .tune-item.active, .offcanvas-body .tune-item.active {
   border: 2px solid red;
+}
+
+.TuneBook .isInPracticeDiary, .offcanvas-body .isInPracticeDiary {
+  color: green;
 }
 
 .TuneBook .TuneNotation {

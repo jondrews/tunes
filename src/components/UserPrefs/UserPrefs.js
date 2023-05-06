@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom"
 import "./UserPrefs.css"
 
 export default function UserPrefs({
-  tuneBook,
-  toggleTuneBookEntry,
   resultsList,
   setResultsList,
   filters,
@@ -18,8 +16,22 @@ export default function UserPrefs({
 }) {
   return (
     <div className="UserPrefs">
-      <h3>My preferred tune settings:</h3>
+      <div className="app-prefs">
+        <h3>App preferences:</h3>
+        <form className="app-prefs-list d-flex flex-column">
+          {Object.entries(userPrefs).map(([appFeature, userPref]) => (
+            <AppFeaturePref
+              key={appFeature}
+              appFeature={appFeature}
+              userPref={userPref}
+              setUserPrefs={setUserPrefs}
+            />
+          ))}
+        </form>
+      </div>
+
       <div className="preferred-settings">
+        <h3>My preferred tune settings:</h3>
         <ul>
           {Object.entries(preferredSettings).map(([tuneId, settingId]) => (
             <PreferredTuneSetting
@@ -67,7 +79,6 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
 
   return loaded ? (
     <li
-      key={`${tuneId}+${settingId}`}
       className="settings-list loaded"
       onClick={() => navigate(`/tune/${tuneId}`)}
     >
@@ -99,6 +110,41 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
   ) : (
     <li key={`${tuneId}+${settingId}`} className="settings-list loading">
       Loading...
+    </li>
+  )
+}
+
+function AppFeaturePref({ appFeature, userPref, setUserPrefs }) {
+  const formElement = () => {
+    switch (typeof userPref) {
+      case "boolean":
+        return "boolean switch"
+      case "number":
+        return "number box"
+      case "string":
+        return "text box"
+      default:
+        return "unsupported type"
+    }
+  }
+
+  return (
+    <li className="app-prefs-list-item container-md d-flex flex-row mb-1 p-0 border">
+      <div className="app-feature feature-name align-self-center flex-grow-1 border border-secondary d-flex flex-column">
+        <h6 className="m-0 p-0">
+          {appFeature}: {userPref}
+        </h6>
+        <p className="m-0 p-0">
+          Explanatory text here. All about this feature and why you should
+          activate it, or not. Yadda yadda, kjhg kjhgf jhgf ytf jfd jhgfjk jyg
+          jyug kjy kjhgb kjuygb kjyg kjyg kygk , uif fbuybk uyg kuyfkb ufb kub
+          jytv hgrdhdvrytvtrdes jh yt yt ytfjhgfjhgfjhytjytrjhgnhgfjhgtffk jf
+          kufb uytfb uytfb u!
+        </p>
+      </div>
+      <div className="app-feature form-element align-self-center flex-shrink-0 border border-secondary">
+        {formElement()}
+      </div>
     </li>
   )
 }

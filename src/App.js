@@ -12,10 +12,12 @@ import "./App.css"
 
 const App = () => {
   const [resultsList, setResultsList] = useState([]) // array of Objects
-  const [tuneBook, setTuneBook] = useState([]) // array of Objects
-  const [practiceDiary, setPracticeDiary] = useState([]) // array of Objects
-  const [preferredSettings, setPreferredSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
-  const [prefSettingsLoaded, setPrefSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
+  const [practiceDiaryEntries, setPracticeDiaryEntries] = useState([]) // array of Objects
+  const [preferredTuneSettings, setPreferredTuneSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
+  const [prefTuneSettingsLoaded, setPrefTuneSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
+  const [userPrefs, setUserPrefs] = useState({})
+  const [userPrefsLoaded, setUserPrefsLoaded] = useState(false)
+  const [practiceDiaryLoaded, setPracticeDiaryLoaded] = useState(false)
   const [filters, setFilters] = useState({
     type: "",
     mode: { key: "", modeType: "" },
@@ -23,82 +25,198 @@ const App = () => {
     inTuneBook: false,
     showTransposedTunes: false,
   })
-  const [userPrefs, setUserPrefs] = useState({
+
+  const defaultUserPrefs = {
     thesessionMemberId: 151540,
     showOnlyPrimarySettings: true, // only return a tune result if its FIRST setting matches the filters (otherwise return the tune result if ANY setting matches filters)
-  })
+    mostRecentInstrument: "mandolin",
+    customInstrumentsList: [],
+  }
 
-  const isInTuneBook = (lookFor) => {
-    return tuneBook.some(
-      (bookEntry) => bookEntry.tuneObject.id === lookFor.tuneObject.id
+  const practiceDiaryContainsTune = (findThisTuneId) => {
+    return practiceDiaryEntries.some((practiceSession) =>
+      practiceSession.tunes.some((tune) => tune.tuneId === findThisTuneId)
     )
   }
 
-  const toggleTuneBookEntry = (bookEntry) => {
-    if (isInTuneBook(bookEntry)) {
-      const newTuneBook = tuneBook.filter(
-        (entry) => entry.tuneObject.id !== bookEntry.tuneObject.id
-      )
-      setTuneBook(newTuneBook)
-    } else {
-      const newEntry = {
-        tuneObject: resultsList.filter(
-          (tune) => tune.id === bookEntry.tuneObject.id
-        )[0],
-        dateAdded: bookEntry.dateAdded,
+  const practiceDiaryContainsSetting = (findThisSettingId) => {
+    return practiceDiaryEntries.some((practiceSession) =>
+      practiceSession.tunes.some((tune) => tune.settingId === findThisSettingId)
+    )
+  }
+
+  const tuneHasBeenPracticed = (tuneId) => {
+    return practiceDiaryEntries.some(
+      (practiceSession) =>
+        practiceSession.tunes.some((tune) => tune.tuneId === tuneId) &&
+        practiceSession.instrument
+    )
+  }
+
+  const getPracticeWishList = () => {
+    /* A tune or set isn't considered 'practiced' until it is assigned an
+       instrument. This method returns practiceSession objects for
+       tunes and sets that aren't yet practiced.                            */
+    const tunes = []
+    const sets = []
+    practiceDiaryEntries.forEach((practiceSession) => {
+      if (!practiceSession.instrument) {
+        if (practiceSession.tunes.length === 1) {
+          tunes.push(practiceSession)
+        } else if (practiceSession.tunes.length > 1 && practiceSession.setId) {
+          sets.push(practiceSession)
+        }
       }
-      const newTuneBook = [newEntry, ...tuneBook]
-      setTuneBook(newTuneBook)
+    })
+    return { tunes, sets }
+  }
+
+  const addToPracticeDiary = (newPracticeSession) => {
+    if (typeof newPracticeSession === "object") {
+      console.group("Adding a new practice session to practiceDiary")
+      newPracticeSession.date = Date.now()
+      console.log("newPracticeSession =", newPracticeSession)
+      setPracticeDiaryEntries([newPracticeSession, ...practiceDiaryEntries])
+      console.groupEnd("Done!")
+      return newPracticeSession
+    } else {
+      console.log(
+        `TYPE ERROR adding newPracticeSession to practiceDiary. Expected 'object', but got ${typeof newPracticeSession}.`
+      )
+      return false
     }
   }
 
-  const managePreferredSettings = (action, tuneId, settingId = -1) => {
+  // Package together practiceDiary methods for passing to child components
+  const practiceDiary = {
+    loaded: practiceDiaryLoaded,
+    entries: practiceDiaryEntries,
+    containsTune: practiceDiaryContainsTune,
+    containsSetting: practiceDiaryContainsSetting,
+    tuneHasBeenPracticed: tuneHasBeenPracticed,
+    getWishlist: getPracticeWishList,
+    add: addToPracticeDiary,
+  }
+
+  const managePreferredTuneSettings = (action, tuneId, settingId = -1) => {
     if (action === "set" && settingId >= 0) {
-      const newSettings = { ...preferredSettings, [tuneId]: settingId }
-      setPreferredSettings(newSettings)
+      setPreferredTuneSettings((oldTuneSettings) => ({
+        ...oldTuneSettings,
+        [tuneId]: settingId,
+      }))
     }
     if (action === "remove") {
-      const newSettings = { ...preferredSettings }
+      const newSettings = { ...preferredTuneSettings }
       delete newSettings[tuneId]
-      setPreferredSettings(newSettings)
+      setPreferredTuneSettings(newSettings)
     }
   }
 
   useEffect(() => {
-    console.log('Loading preferredSettings from localStorage')
+    console.log("Loading preferredSettings from localStorage")
     const savedPreferredSettings = JSON.parse(
       localStorage.getItem("preferredSettings")
     )
     if (savedPreferredSettings) {
-      console.log('Loaded preferredSettings:', savedPreferredSettings)
-      setPreferredSettings(savedPreferredSettings)
+      console.log("Loaded preferredSettings:", savedPreferredSettings)
+      setPreferredTuneSettings(savedPreferredSettings)
     } else {
-      console.log('No saved preferredSettings found')
+      console.log("No saved preferredSettings found")
     }
-    setPrefSettingsLoaded(true)
+    setPrefTuneSettingsLoaded(true)
+  }, [])
+
+  // Load user prefs on mount
+  useEffect(() => {
+    console.group("Loading UserPrefs:")
+    const savedUserPrefs = JSON.parse(localStorage.getItem("userPrefs"))
+    if (savedUserPrefs) {
+      const newUserPrefs = {}
+      Object.keys(defaultUserPrefs).forEach((featureName) => {
+        if (featureName in savedUserPrefs) {
+          console.log(`Found ${featureName}: ${savedUserPrefs[featureName]}`)
+          newUserPrefs[featureName] = savedUserPrefs[featureName]
+        } else {
+          console.log(
+            `NOT FOUND ${featureName} - Using default value: ${savedUserPrefs[featureName]}`
+          )
+          newUserPrefs[featureName] = defaultUserPrefs[featureName]
+        }
+      })
+      setUserPrefs(newUserPrefs)
+    } else {
+      console.log("No saved savedUserPrefs found - setting all to defaults.")
+      setUserPrefs(defaultUserPrefs)
+    }
+    console.groupEnd()
+    setUserPrefsLoaded(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // const saveUserPrefs = () => {
+  //   console.group("saveUserPrefs:")
+  //   console.log("Saving userPrefs as:", userPrefs)
+  //   localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
+  //   console.groupEnd()
+  // }
+
+  // useEffect(() => {
+  //   // if (userPrefsLoaded) {
+  //   //   if (userPrefsListHasChanged()) {
+  //   //     console.log("Not saving userPrefs because its size has changed")
+  //   //   } else {
+  //   //     console.log("Saving userPrefs as:", userPrefs)
+  //   //     localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
+  //   //   }
+  //   // }
+  //   saveUserPrefs()
+  // }, [userPrefs])
+
+  const updateUserPref = (key, value) => {
+    setUserPrefs((prevPrefs) => ({ ...prevPrefs, [key]: value }))
+  }
+
+  useEffect(() => {
+    console.log("Loading practiceDiary from localStorage")
+    const savedPracticeDiary = JSON.parse(localStorage.getItem("practiceDiary"))
+    if (savedPracticeDiary) {
+      console.log("Loaded practiceDiary:", savedPracticeDiary)
+      setPracticeDiaryEntries(savedPracticeDiary)
+    } else {
+      console.log("No saved practiceDiary found")
+    }
+    setPracticeDiaryLoaded(true)
   }, [])
 
   useEffect(() => {
-    if (prefSettingsLoaded) {
-      console.log('Saving preferredSettings as:', preferredSettings)
-      localStorage.setItem("preferredSettings", JSON.stringify(preferredSettings))
+    if (prefTuneSettingsLoaded) {
+      console.log("Saving preferredSettings as:", preferredTuneSettings)
+      localStorage.setItem(
+        "preferredSettings",
+        JSON.stringify(preferredTuneSettings)
+      )
     }
-  }, [preferredSettings, prefSettingsLoaded])
+  }, [preferredTuneSettings, prefTuneSettingsLoaded])
+
+  useEffect(() => {
+    if (practiceDiaryLoaded) {
+      console.log("Saving practiceDiary as:", practiceDiaryEntries)
+      localStorage.setItem(
+        "practiceDiary",
+        JSON.stringify(practiceDiaryEntries)
+      )
+    }
+  }, [practiceDiaryEntries, practiceDiaryLoaded])
 
   return (
     <div className="App" data-testid="App">
       <BrowserRouter>
-        <Navigation
-          tuneBook={tuneBook}
-          toggleTuneBookEntry={toggleTuneBookEntry}
-        />
+        <Navigation practiceDiary={practiceDiary} />
         <Routes>
           <Route
             path="/"
             element={
               <HomePage
-                tuneBook={tuneBook}
-                toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
                 setResultsList={setResultsList}
                 filters={filters}
@@ -106,9 +224,8 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                setPracticeDiary={setPracticeDiary}
-                preferredSettings={preferredSettings}
-                managePreferredSettings={managePreferredSettings}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
               />
             }
           />
@@ -117,8 +234,6 @@ const App = () => {
             path="/tune"
             element={
               <TuneNotation
-                tuneBook={tuneBook}
-                toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
                 setResultsList={setResultsList}
                 filters={filters}
@@ -126,9 +241,8 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                setPracticeDiary={setPracticeDiary}
-                preferredSettings={preferredSettings}
-                managePreferredSettings={managePreferredSettings}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
               />
             }
           >
@@ -136,8 +250,6 @@ const App = () => {
               path=":tuneId"
               element={
                 <TuneNotation
-                  tuneBook={tuneBook}
-                  toggleTuneBookEntry={toggleTuneBookEntry}
                   resultsList={resultsList}
                   setResultsList={setResultsList}
                   filters={filters}
@@ -145,9 +257,8 @@ const App = () => {
                   userPrefs={userPrefs}
                   setUserPrefs={setUserPrefs}
                   practiceDiary={practiceDiary}
-                  setPracticeDiary={setPracticeDiary}
-                  preferredSettings={preferredSettings}
-                  managePreferredSettings={managePreferredSettings}
+                  preferredSettings={preferredTuneSettings}
+                  managePreferredSettings={managePreferredTuneSettings}
                 />
               }
             />
@@ -157,8 +268,6 @@ const App = () => {
             path="/tunebook"
             element={
               <TuneBook
-                tuneBook={tuneBook}
-                toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
                 setResultsList={setResultsList}
                 filters={filters}
@@ -166,18 +275,15 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                setPracticeDiary={setPracticeDiary}
-                preferredSettings={preferredSettings}
-                managePreferredSettings={managePreferredSettings}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
               />
             }
           >
             <Route
-              path=":tuneId"
+              path="tune/:tuneId"
               element={
                 <TuneNotation
-                  tuneBook={tuneBook}
-                  toggleTuneBookEntry={toggleTuneBookEntry}
                   resultsList={resultsList}
                   setResultsList={setResultsList}
                   filters={filters}
@@ -185,9 +291,8 @@ const App = () => {
                   userPrefs={userPrefs}
                   setUserPrefs={setUserPrefs}
                   practiceDiary={practiceDiary}
-                  setPracticeDiary={setPracticeDiary}
-                  preferredSettings={preferredSettings}
-                  managePreferredSettings={managePreferredSettings}
+                  preferredSettings={preferredTuneSettings}
+                  managePreferredSettings={managePreferredTuneSettings}
                 />
               }
             />
@@ -197,8 +302,6 @@ const App = () => {
             path="/practice"
             element={
               <Practice
-                tuneBook={tuneBook}
-                toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
                 setResultsList={setResultsList}
                 filters={filters}
@@ -206,19 +309,49 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                setPracticeDiary={setPracticeDiary}
-                preferredSettings={preferredSettings}
-                managePreferredSettings={managePreferredSettings}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
               />
             }
-          />
+          >
+            <Route
+              path="tune/:tuneId"
+              element={
+                <TuneNotation
+                  resultsList={resultsList}
+                  setResultsList={setResultsList}
+                  filters={filters}
+                  setFilters={setFilters}
+                  userPrefs={userPrefs}
+                  setUserPrefs={setUserPrefs}
+                  practiceDiary={practiceDiary}
+                  preferredSettings={preferredTuneSettings}
+                  managePreferredSettings={managePreferredTuneSettings}
+                />
+              }
+            />
+            <Route
+              path="set/:setId"
+              element={
+                <TuneNotation
+                  resultsList={resultsList}
+                  setResultsList={setResultsList}
+                  filters={filters}
+                  setFilters={setFilters}
+                  userPrefs={userPrefs}
+                  setUserPrefs={setUserPrefs}
+                  practiceDiary={practiceDiary}
+                  preferredSettings={preferredTuneSettings}
+                  managePreferredSettings={managePreferredTuneSettings}
+                />
+              }
+            />
+          </Route>
 
           <Route
             path="/prefs"
             element={
               <UserPrefs
-                tuneBook={tuneBook}
-                toggleTuneBookEntry={toggleTuneBookEntry}
                 resultsList={resultsList}
                 setResultsList={setResultsList}
                 filters={filters}
@@ -226,9 +359,8 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                setPracticeDiary={setPracticeDiary}
-                preferredSettings={preferredSettings}
-                managePreferredSettings={managePreferredSettings}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
               />
             }
           />

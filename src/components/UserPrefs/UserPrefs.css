@@ -10,7 +10,7 @@
   background: var(--bg-hover);
 }
 
-.UserPrefs .settings-list.loaded .tune-name {
+.UserPrefs .settings-list.loaded .tune-name,.UserPrefs .app-feature-name {
   font-size: medium;
   display: inline-block;
 }

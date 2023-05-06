@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import MenuBookIcon from "@mui/icons-material/MenuBook"
+// import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
 
 import parseABC from "../../parseABC"
@@ -8,8 +8,6 @@ import "./TuneResult.css"
 
 export default function TuneResult({
   tune,
-  tuneBook,
-  toggleTuneBookEntry,
   filters,
   setFilters,
   setResultsList,
@@ -56,16 +54,8 @@ export default function TuneResult({
     if (event.stopPropagation) event.stopPropagation()
   }
 
-  const isInTuneBook = (tuneId) => {
-    return (
-      tuneBook &&
-      tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
-    )
-  }
-
   useEffect(() => {
     renderNotation(`${tune.id}incipit`, tune.settings[0])
-
   }, [tune.id, tune.settings])
 
   return (
@@ -78,19 +68,6 @@ export default function TuneResult({
           <>
             <div className="tune-title d-flex">
               <h4 className="p-0 m-0">{tune.name}</h4>
-
-              <button
-                className="add-to-tunebook"
-                onClick={(event) =>
-                  handleClick(event, toggleTuneBookEntry, {
-                    tuneObject: tune,
-                    dateAdded: Date.now(),
-                  })
-                }
-              >
-                <MenuBookIcon />
-                {isInTuneBook(tune.id) ? " Remove" : " Add"}
-              </button>
             </div>
 
             <div className="tune-filters">

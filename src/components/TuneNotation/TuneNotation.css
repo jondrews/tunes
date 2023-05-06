@@ -5,19 +5,14 @@
 }
 
 .TuneNotation .settings-select-container {
-  display: flex;
-  flex-direction: column;
-  width: 20rem;
-}
-
-.settings-select-container {
   margin: auto;
   display: flex;
   flex-direction: column;
+  width: 20rem;
   align-items: center;
 }
 
-.settings-total-text {
+.settings-total {
   margin: 0;
 }
 

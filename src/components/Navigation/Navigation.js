@@ -36,11 +36,12 @@ export default function Navigation(props) {
             </NavLink>
             <NavLink to="/tunebook" className="nav-link">
               My tunebook
-              {props.tuneBook.length > 0 ? (
+              {/* COUNT BUBBLE DEPRECATED (but could show size of thesession tunebook...) */}
+              {/* {props.tuneBook.length > 0 ? (
                 <span className="tunebook-count">{props.tuneBook.length}</span>
               ) : (
                 ""
-              )}
+              )} */}
             </NavLink>
             <NavLink to="/practice" className="nav-link">
               Practice

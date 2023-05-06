@@ -3,8 +3,7 @@ import { useState, useEffect } from "react"
 import abcjs from "abcjs"
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
-import MenuBookIcon from "@mui/icons-material/MenuBook"
-import Pluralize from "pluralize"
+// import MenuBookIcon from "@mui/icons-material/MenuBook"
 
 import parseABC from "../../parseABC"
 import "./TuneNotation.css"
@@ -13,7 +12,6 @@ export default function TuneNotation({
   tuneBook,
   toggleTuneBookEntry,
   practiceDiary,
-  setPracticeDiary,
   preferredSettings,
   setPreferredSettings,
   managePreferredSettings,
@@ -26,6 +24,19 @@ export default function TuneNotation({
     width: 750,
   })
 
+  const elem = document.getElementById("notation")
+  const openFullscreen = () => {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen()
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen()
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen()
+    }
+  }
+
   const handleResize = () => {
     setDimensions({
       height: document.getElementById("notation")
@@ -35,13 +46,6 @@ export default function TuneNotation({
         ? document.getElementById("notation").clientWidth
         : 750,
     })
-  }
-
-  const isInTuneBook = (tuneId) => {
-    return (
-      tuneBook &&
-      tuneBook.some((bookEntry) => bookEntry.tuneObject.id === tuneId)
-    )
   }
 
   useEffect(() => {
@@ -90,10 +94,6 @@ export default function TuneNotation({
     <div className="TuneNotation">
       {tuneObject && tuneObject.settings && (
         <div className="settings-select-container">
-          <p className="settings-total-text">
-            This tune has {tuneObject.settings.length}{" "}
-            {Pluralize("setting", tuneObject.settings.length)}
-          </p>
           {tuneObject.settings.length > 1 && (
             <div className="settings-select-action">
               <button
@@ -109,7 +109,7 @@ export default function TuneNotation({
                 <ChevronLeftIcon />
               </button>
               <p className="settings-select-text">
-                Showing setting #{tuneSetting + 1}
+                Setting #{tuneSetting + 1} of {tuneObject.settings.length}
               </p>
               <button
                 className="settings-select-button"
@@ -170,26 +170,34 @@ export default function TuneNotation({
       <div className="notation" id="notation"></div>
 
       <div className="notation-actions">
+        {tuneObject &&
+          (practiceDiary.containsTune(tuneObject.id) ? (
+            <button
+              className="practice-now btn btn-outline-danger"
+              onClick={() => {
+                // TODO: Navigate to Practice page for this tune setting
+              }}
+            >
+              Practice this tune now
+            </button>
+          ) : (
+            <button
+              className="add-to-practiceDiary btn btn-outline-danger"
+              onClick={() => {
+                practiceDiary.add({
+                  tunes: [{ tuneId: tuneObject.id, settingId: tuneSetting }],
+                })
+              }}
+            >
+              Add to my practice list
+            </button>
+          ))}
         {tuneObject && (
-          <button
-            className="add-to-tunebook btn btn-outline-danger"
-            onClick={() => {
-              toggleTuneBookEntry({
-                tuneObject: tuneObject,
-                dateAdded: Date.now(),
-              })
-            }}
-          >
-            <MenuBookIcon />
-            {isInTuneBook(tuneObject.id) ? "Remove" : "Add"}
+          <button className="open-fullscreen" onClick={() => openFullscreen()}>
+            Fullscreen
           </button>
         )}
       </div>
-    </div>
-  ) : tuneBook.length > 0 ? (
-    <div className="select-from-tunebook">
-      <h2>Select a tune</h2>
-      <p>from the tunebook menu on the left</p>
     </div>
   ) : (
     <div className="no-tune-selected">
