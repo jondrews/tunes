@@ -11,7 +11,6 @@ import UserPrefs from "./components/UserPrefs/UserPrefs"
 import "./App.css"
 
 const App = () => {
-  const [resultsList, setResultsList] = useState([]) // array of Objects
   const [practiceDiaryEntries, setPracticeDiaryEntries] = useState([]) // array of Objects
   const [preferredTuneSettings, setPreferredTuneSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
   const [prefTuneSettingsLoaded, setPrefTuneSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
@@ -205,8 +204,6 @@ const App = () => {
             path="/"
             element={
               <HomePage
-                resultsList={resultsList}
-                setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}
@@ -222,8 +219,6 @@ const App = () => {
             path="/tune"
             element={
               <TuneNotation
-                resultsList={resultsList}
-                setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}
@@ -238,8 +233,6 @@ const App = () => {
               path=":tuneId"
               element={
                 <TuneNotation
-                  resultsList={resultsList}
-                  setResultsList={setResultsList}
                   filters={filters}
                   setFilters={setFilters}
                   userPrefs={userPrefs}
@@ -256,8 +249,6 @@ const App = () => {
             path="/tunebook"
             element={
               <TuneBook
-                resultsList={resultsList}
-                setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}
@@ -272,8 +263,6 @@ const App = () => {
               path="tune/:tuneId"
               element={
                 <TuneNotation
-                  resultsList={resultsList}
-                  setResultsList={setResultsList}
                   filters={filters}
                   setFilters={setFilters}
                   userPrefs={userPrefs}
@@ -290,8 +279,6 @@ const App = () => {
             path="/practice"
             element={
               <Practice
-                resultsList={resultsList}
-                setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}
@@ -306,8 +293,6 @@ const App = () => {
               path="tune/:tuneId"
               element={
                 <TuneNotation
-                  resultsList={resultsList}
-                  setResultsList={setResultsList}
                   filters={filters}
                   setFilters={setFilters}
                   userPrefs={userPrefs}
@@ -322,8 +307,6 @@ const App = () => {
               path="set/:setId"
               element={
                 <TuneNotation
-                  resultsList={resultsList}
-                  setResultsList={setResultsList}
                   filters={filters}
                   setFilters={setFilters}
                   userPrefs={userPrefs}
@@ -340,8 +323,6 @@ const App = () => {
             path="/prefs"
             element={
               <UserPrefs
-                resultsList={resultsList}
-                setResultsList={setResultsList}
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}

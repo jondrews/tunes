@@ -5,13 +5,7 @@ import modes from "../../modes.js"
 import types from "../../types.js"
 import "./FilterSelect.css"
 
-export default function FilterSelect({
-  filters,
-  setFilters,
-  setResultsList,
-  setPage,
-  controller,
-}) {
+export default function FilterSelect({ filters, setFilters, resetResults }) {
   Pluralize.addPluralRule(/waltz/i, "waltzes") // 🙄
 
   const changeKey = (e) => {
@@ -19,9 +13,11 @@ export default function FilterSelect({
       ...prevFilters,
       mode: { ...prevFilters.mode, key: e.target.value },
     }))
-    console.log(`KEY FILTER changed to ${e.target.value}. new filters:`, filters)
-    setResultsList([])
-    setPage(1)
+    console.log(
+      `KEY FILTER changed to ${e.target.value}. new filters:`,
+      filters
+    )
+    resetResults()
   }
 
   const changeMode = (e) => {
@@ -29,8 +25,7 @@ export default function FilterSelect({
       ...prevFilters,
       mode: { key: prevFilters.mode.key, modeType: e.target.value },
     }))
-    setResultsList([])
-    setPage(1)
+    resetResults()
   }
 
   const changeType = (e) => {
@@ -38,8 +33,7 @@ export default function FilterSelect({
       ...prevFilters,
       type: e.target.value,
     }))
-    setResultsList([])
-    setPage(1)
+    resetResults()
   }
 
   return (

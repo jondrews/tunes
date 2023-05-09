@@ -9,11 +9,8 @@ import parseABC from "../../parseABC"
 import "./TuneNotation.css"
 
 export default function TuneNotation({
-  tuneBook,
-  toggleTuneBookEntry,
   practiceDiary,
   preferredSettings,
-  setPreferredSettings,
   managePreferredSettings,
 }) {
   let params = useParams()

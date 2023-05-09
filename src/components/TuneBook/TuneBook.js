@@ -98,8 +98,6 @@ export default function TuneBook(props) {
           {thesessionTuneSelection()}
         </div>
         <TuneNotation
-          resultsList={props.resultsList}
-          setResultsList={props.setResultsList}
           filters={props.filters}
           setFilters={props.setFilters}
           userPrefs={props.userPrefs}

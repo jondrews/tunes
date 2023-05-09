@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 // import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
@@ -7,13 +7,15 @@ import parseABC from "../../parseABC"
 import "./TuneResult.css"
 
 export default function TuneResult({
-  tune,
+  id,
+  name,
   filters,
   setFilters,
-  setResultsList,
-  setPage,
+  resetResults,
+  userPrefs,
 }) {
-  // const [tuneObject, setTuneObject] = useState()
+  const [tune, setTune] = useState()
+  const [visible, setVisible] = useState(true)
   const navigate = useNavigate()
 
   const renderNotation = (element, tune) => {
@@ -30,8 +32,7 @@ export default function TuneResult({
       ...prevFilters,
       type: `${tuneType}`,
     }))
-    setResultsList([])
-    setPage(1)
+    resetResults()
   }
 
   const filterByKey = (tuneKey) => {
@@ -41,8 +42,7 @@ export default function TuneResult({
       ...prevFilters,
       mode: { key: key, modeType: mode },
     }))
-    setResultsList([])
-    setPage(1)
+    resetResults()
   }
 
   const handleClick = (event, callback, arg) => {
@@ -55,56 +55,108 @@ export default function TuneResult({
   }
 
   useEffect(() => {
-    renderNotation(`${tune.id}incipit`, tune.settings[0])
-  }, [tune.id, tune.settings])
+    tune && renderNotation(`${id}incipit`, tune.settings[0])
+  }, [tune])
+
+  useEffect(() => {
+    console.log(`Fetching details for tune ${id}`)
+
+    const url = `https://thesession.org/tunes/${id}?format=json`
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(`Data for tune #${id}`, data)
+        // determine if 'showOnlyPrimarySettings' filter is applicable
+        if (
+          userPrefs.showOnlyPrimarySettings &&
+          (filters.mode.key || filters.mode.modeType)
+        ) {
+          // only display this result if the FIRST setting matches user filters
+          if (
+            `${data.settings[0].key}` ===
+            `${
+              filters.mode.key +
+              (filters.mode.modeType ? filters.mode.modeType : "major")
+            }`
+          ) {
+            console.log(
+              `TUNE ${id}'s primary setting is in ${
+                data.settings[0].key
+              } --> (matches ${
+                filters.mode.key +
+                (filters.mode.modeType ? filters.mode.modeType : "major")
+              })`
+            )
+            setTune(data)
+          } else {
+            console.log(
+              `TUNE ${id}'s primary setting is in ${
+                data.settings[0].key
+              } --> HIDING (no match: ${
+                filters.mode.key +
+                (filters.mode.modeType ? filters.mode.modeType : "major")
+              })`
+            )
+            setVisible(false)
+          }
+        } else {
+          setTune(data)
+        }
+      })
+  }, [filters, userPrefs])
 
   return (
-    <div
-      className="TuneResult mt-2 d-flex flex-column"
-      onClick={() => navigate(`/tune/${tune.id}`)}
-    >
-      <div className="tune-info d-flex flex-column">
-        {tune ? (
-          <>
-            <div className="tune-title d-flex">
-              <h4 className="p-0 m-0">{tune.name}</h4>
+    visible &&
+    tune && (
+      <div
+        className="TuneResult mt-2 d-flex flex-column"
+        onClick={() => navigate(`/tune/${id}`)}
+      >
+        <div className="tune-info d-flex flex-column">
+          {id ? (
+            <>
+              <div className="tune-title d-flex">
+                <h4 className="p-0 m-0">{name}</h4>
+              </div>
+
+              <div className="tune-filters">
+                <button
+                  className="tune-type"
+                  onClick={(event) =>
+                    handleClick(event, filterByTuneType, tune.type)
+                  }
+                >
+                  {tune.type.replace(/\b\w/, (c) => c.toUpperCase())}
+                </button>
+
+                <span className="tune-in">in</span>
+
+                <button
+                  className="tune-key"
+                  onClick={(event) =>
+                    handleClick(event, filterByKey, tune.settings[0].key)
+                  }
+                >
+                  {tune.settings[0].key.replace(
+                    /([A-Ga-g][b♭#♯]{0,2})(\s*)([A-Za-z]*)/,
+                    "$1 $3"
+                  )}
+                </button>
+
+                <span className="tune-id"> #{tune.id}</span>
+              </div>
+            </>
+          ) : (
+            <div className="tune-title flex-grow-1">
+              <p>Loading...</p>
             </div>
+          )}
+        </div>
 
-            <div className="tune-filters">
-              <button
-                className="tune-type"
-                onClick={(event) =>
-                  handleClick(event, filterByTuneType, tune.type)
-                }
-              >
-                {tune.type.replace(/\b\w/, (c) => c.toUpperCase())}
-              </button>
-
-              <span className="tune-in">in</span>
-
-              <button
-                className="tune-key"
-                onClick={(event) =>
-                  handleClick(event, filterByKey, tune.settings[0].key)
-                }
-              >
-                {tune.settings[0].key.replace(
-                  /([A-Ga-g][b♭#♯]{0,2})(\s*)([A-Za-z]*)/,
-                  "$1 $3"
-                )}
-              </button>
-
-              <span className="tune-id"> #{tune.id}</span>
-            </div>
-          </>
-        ) : (
-          <div className="tune-title flex-grow-1">
-            <p>Loading...</p>
-          </div>
-        )}
+        <div className="tune-incipit" id={id + "incipit"}>
+          {/* incipit (snippet of musical notation) gets rendered here */}
+        </div>
       </div>
-
-      <div className="tune-incipit" id={tune.id + "incipit"}></div>
-    </div>
+    )
   )
 }

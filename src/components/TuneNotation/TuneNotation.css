@@ -32,6 +32,10 @@
 #notation {
   margin: 0;
 }
+:fullscreen, ::backdrop {
+  background-color: rgb(255,255,255);
+  overflow: scroll !important;
+}
 
 .notation-actions {
   display: flex;
