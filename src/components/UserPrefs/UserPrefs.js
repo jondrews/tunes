@@ -14,10 +14,25 @@ export default function UserPrefs({
   preferredSettings,
   managePreferredSettings,
 }) {
+  const updateUserPref = (key, value) => {
+    setUserPrefs((prevPrefs) => ({ ...prevPrefs, [key]: value }))
+  }
+
+  const handleInputChange = (key, event) => {
+    let value = event.target.value
+    if (typeof userPrefs[key] === "boolean") {
+      value = event.target.checked
+    } else if (typeof userPrefs[key] === "number") {
+      value = Number(value)
+    }
+    updateUserPref(key, value)
+  }
+
   return (
     <div className="UserPrefs">
       <div className="app-prefs">
         <h3>App preferences:</h3>
+
         <form className="app-prefs-list d-flex flex-column">
           {Object.entries(userPrefs).map(([appFeature, userPref]) => (
             <AppFeaturePref
@@ -25,6 +40,7 @@ export default function UserPrefs({
               appFeature={appFeature}
               userPref={userPref}
               setUserPrefs={setUserPrefs}
+              handleInputChange={handleInputChange}
             />
           ))}
         </form>
@@ -114,36 +130,46 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
   )
 }
 
-function AppFeaturePref({ appFeature, userPref, setUserPrefs }) {
-  const formElement = () => {
-    switch (typeof userPref) {
-      case "boolean":
-        return "boolean switch"
-      case "number":
-        return "number box"
-      case "string":
-        return "text box"
-      default:
-        return "unsupported type"
-    }
-  }
-
+function AppFeaturePref({
+  appFeature,
+  userPref,
+  setUserPrefs,
+  handleInputChange,
+}) {
   return (
     <li className="app-prefs-list-item container-md d-flex flex-row mb-1 p-0 border">
       <div className="app-feature feature-name align-self-center flex-grow-1 border border-secondary d-flex flex-column">
-        <h6 className="m-0 p-0">
-          {appFeature}: {userPref}
-        </h6>
-        <p className="m-0 p-0">
+        <label htmlFor={appFeature} className="m-0 p-0">
+          {appFeature}
+        </label>
+        {/* <p className="m-0 p-0">
           Explanatory text here. All about this feature and why you should
-          activate it, or not. Yadda yadda, kjhg kjhgf jhgf ytf jfd jhgfjk jyg
-          jyug kjy kjhgb kjuygb kjyg kjyg kygk , uif fbuybk uyg kuyfkb ufb kub
-          jytv hgrdhdvrytvtrdes jh yt yt ytfjhgfjhgfjhytjytrjhgnhgfjhgtffk jf
-          kufb uytfb uytfb u!
-        </p>
+          activate it, or not.
+        </p> */}
       </div>
       <div className="app-feature form-element align-self-center flex-shrink-0 border border-secondary">
-        {formElement()}
+        {typeof userPref === "boolean" ? (
+          <input
+            type="checkbox"
+            id={appFeature}
+            checked={userPref}
+            onChange={(event) => handleInputChange(appFeature, event)}
+          />
+        ) : typeof value === "number" ? (
+          <input
+            type="number"
+            id={appFeature}
+            value={userPref}
+            onChange={(event) => handleInputChange(appFeature, event)}
+          />
+        ) : (
+          <input
+            type="text"
+            id={appFeature}
+            value={userPref}
+            onChange={(event) => handleInputChange(appFeature, event)}
+          />
+        )}
       </div>
     </li>
   )

@@ -56,7 +56,7 @@ export default function TuneResult({
 
   useEffect(() => {
     tune && renderNotation(`${id}incipit`, tune.settings[0])
-  }, [tune])
+  }, [tune, id])
 
   useEffect(() => {
     console.log(`Fetching details for tune ${id}`)
