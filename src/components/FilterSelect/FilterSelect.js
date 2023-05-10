@@ -47,7 +47,7 @@ export default function FilterSelect({ filters, setFilters, resetResults }) {
           onChange={(e) => changeType(e)}
         >
           <option value="">all tunes</option>
-          {types.map((type) => (
+          {Object.keys(types).map((type) => (
             <option value={type} key={type}>
               {Pluralize(type, 2)}
             </option>

@@ -5,6 +5,7 @@ import abcjs from "abcjs"
 
 import parseABC from "../../parseABC"
 import "./TuneResult.css"
+import types from "../../types.js"
 
 export default function TuneResult({
   id,
@@ -18,9 +19,10 @@ export default function TuneResult({
   const [visible, setVisible] = useState(true)
   const navigate = useNavigate()
 
-  const renderNotation = (element, tune) => {
+  const renderNotation = (element, tune, tuneType) => {
+    console.log('renderNotation tune object:', tune)
     const incipit = /^([^|])*\|([^|]*\|){1,4}/.exec(parseABC(tune.abc))[0]
-    abcjs.renderAbc(element, `X:1\nK:${tune.key}\n${incipit}\n`, {
+    abcjs.renderAbc(element, `X:1\nM:${types[tuneType]}\nK:${tune.key}\n${incipit}\n`, {
       responsive: "resize",
       lineBreaks: [5, 10],
       paddingtop: 0,
@@ -55,7 +57,7 @@ export default function TuneResult({
   }
 
   useEffect(() => {
-    tune && renderNotation(`${id}incipit`, tune.settings[0])
+    tune && renderNotation(`${id}incipit`, tune.settings[0], tune.type)
   }, [tune, id])
 
   useEffect(() => {
@@ -66,6 +68,8 @@ export default function TuneResult({
       .then((response) => response.json())
       .then((data) => {
         console.log(`Data for tune #${id}`, data)
+        // TODO: Override this if the user has a preffered tune setting in 
+        // a different key to the primary tune setting.
         // determine if 'showOnlyPrimarySettings' filter is applicable
         if (
           userPrefs.showOnlyPrimarySettings &&

@@ -15,6 +15,8 @@ export default function HomePage({
   setFilters,
   userPrefs,
   setUserPrefs,
+  preferredTuneSettings,
+  managePreferredTuneSettings,
 }) {
   const [resultsFromServer, setResultsFromServer] = useState({})
   const [checkedResults, setCheckedResults] = useState([]) // array of Objects (tunes)
@@ -294,6 +296,8 @@ export default function HomePage({
                 setFilters={setFilters}
                 resetResults={resetResults}
                 userPrefs={userPrefs}
+                preferredTuneSettings={preferredTuneSettings}
+                managePreferredTuneSettings={managePreferredTuneSettings}
               />
             ))}
           </div>

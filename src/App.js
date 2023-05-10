@@ -209,8 +209,8 @@ const App = () => {
                 userPrefs={userPrefs}
                 setUserPrefs={setUserPrefs}
                 practiceDiary={practiceDiary}
-                preferredSettings={preferredTuneSettings}
-                managePreferredSettings={managePreferredTuneSettings}
+                preferredTuneSettings={preferredTuneSettings}
+                managePreferredTuneSettings={managePreferredTuneSettings}
               />
             }
           />

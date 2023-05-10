@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom"
 import { useState, useEffect } from "react"
+import moment from "moment"
 import abcjs from "abcjs"
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
@@ -7,6 +8,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 
 import parseABC from "../../parseABC"
 import "./TuneNotation.css"
+import types from "../../types.js"
 
 export default function TuneNotation({
   practiceDiary,
@@ -15,22 +17,23 @@ export default function TuneNotation({
 }) {
   let params = useParams()
   const [tuneObject, setTuneObject] = useState()
+  const [commentsByAuthorOnly, setCommentsByAuthorOnly] = useState(true)
   const [tuneSetting, setTuneSetting] = useState(0)
   const [dimensions, setDimensions] = useState({
     height: 750,
     width: 750,
   })
 
-  const elem = document.getElementById("notation")
+  const notation = document.getElementById("notation")
   const openFullscreen = () => {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen()
-    } else if (elem.webkitRequestFullscreen) {
+    if (notation.requestFullscreen) {
+      notation.requestFullscreen()
+    } else if (notation.webkitRequestFullscreen) {
       /* Safari */
-      elem.webkitRequestFullscreen()
-    } else if (elem.msRequestFullscreen) {
+      notation.webkitRequestFullscreen()
+    } else if (notation.msRequestFullscreen) {
       /* IE11 */
-      elem.msRequestFullscreen()
+      notation.msRequestFullscreen()
     }
   }
 
@@ -74,7 +77,7 @@ export default function TuneNotation({
       )
       abcjs.renderAbc(
         "notation",
-        `X:1\nT:${tuneObject.name}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,
+        `X:1\nT:${tuneObject.name}\nM:${types[tuneObject.type]}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,
         {
           staffwidth: dimensions.width * 0.9,
           wrap: {
@@ -164,6 +167,7 @@ export default function TuneNotation({
         </div>
       )}
 
+
       <div className="notation" id="notation"></div>
 
       <div className="notation-actions">
@@ -195,12 +199,71 @@ export default function TuneNotation({
           </button>
         )}
       </div>
+
+      {tuneObject && tuneObject.comments && (
+        <div className="tune-comments-list d-flex flex-column">
+          <div className="tune-comments-header d-flex align-items-baseline">
+            <h6 className="m-3">
+              {commentsByAuthorOnly
+                ? "Comments by this setting's author: "
+                : "All comments on this tune"}
+            </h6>
+            <button
+              className="btn btn-sm btn-outline-secondary p-0"
+              onClick={() => {
+                setCommentsByAuthorOnly(!commentsByAuthorOnly)
+              }}
+            >
+              {commentsByAuthorOnly
+                ? "show all comments"
+                : "setting author's comments only"}
+            </button>
+          </div>
+
+          {commentsByAuthorOnly
+            ? tuneObject.comments.map(
+                (comment) =>
+                  comment.member.id ===
+                    tuneObject.settings[tuneSetting].member.id && (
+                    <TuneComment comment={comment} />
+                  )
+              )
+            : tuneObject.comments.map((comment) => (
+                <TuneComment comment={comment} />
+              ))}
+        </div>
+      )}
     </div>
   ) : (
     <div className="no-tune-selected">
       <h2>No tune selected</h2>
       <p>
         Head to the <Link to="/">homepage</Link> to find one
+      </p>
+    </div>
+  )
+}
+
+const TuneComment = ({ comment }) => {
+  const commentDate = new Date(comment.date)
+  return (
+    <div className="TuneComment d-flex align-items-center">
+      <div className="author-info d-flex flex-column m-3">
+        <a
+          className="comment-author"
+          href={comment.member.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {comment.member.name}
+        </a>
+        <div className="comment-age d-flex flex-nowrap flex-shrink-0">
+          {moment(comment.date).fromNow()}
+        </div>
+      </div>
+
+      <p className="content">
+        <code>{comment.content}</code>
       </p>
     </div>
   )

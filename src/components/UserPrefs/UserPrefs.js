@@ -94,12 +94,12 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
   }, [tuneId, settingId])
 
   return loaded ? (
-    <li
-      className="settings-list loaded"
-      onClick={() => navigate(`/tune/${tuneId}`)}
-    >
-      <h3 className="tune-name">{tuneObject.name}</h3>
-      <span className="tuneId">(#{tuneId})</span>: Setting #{settingId + 1} in{" "}
+    <li className="settings-list loaded">
+      <a className="tune-name" href={`/tune/${tuneId}`}>
+        {tuneObject.name}
+      </a>
+      <span className="tune-type"> {tuneObject.type}</span>
+      <span className="tuneId"> (#{tuneId})</span>: Setting #{settingId + 1} in{" "}
       {/([A-G][b#♭♯]*)/.exec(tuneObject.settings[settingId].key)[0]}{" "}
       {tuneObject.settings[settingId].key.slice(
         /([A-G][b#♭♯]*)/.exec(tuneObject.settings[settingId].key)[0].length

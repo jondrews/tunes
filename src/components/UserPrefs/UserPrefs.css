@@ -3,7 +3,6 @@
 }
 
 .UserPrefs .settings-list.loaded {
-  cursor: pointer;
   text-decoration: none;
 }
 .UserPrefs .settings-list.loaded:hover {
@@ -11,6 +10,7 @@
 }
 
 .UserPrefs .settings-list.loaded .tune-name,.UserPrefs .app-feature-name {
+  text-decoration: none;
   font-size: medium;
   display: inline-block;
 }

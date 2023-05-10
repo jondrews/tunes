@@ -46,3 +46,12 @@
 .add-to-tunebook {
   display: flex;
 }
+
+.TuneComment .comment-author {
+  text-decoration: none;
+}
+
+.TuneComment .comment-age {
+  color: var(--text-muted);
+  font-size: small;
+}
