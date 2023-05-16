@@ -17,6 +17,7 @@ export default function HomePage({
   setUserPrefs,
   preferredTuneSettings,
   managePreferredTuneSettings,
+  tuneCache,
 }) {
   const [resultsFromServer, setResultsFromServer] = useState({})
   const [checkedResults, setCheckedResults] = useState([]) // array of Objects (tunes)
@@ -110,7 +111,6 @@ export default function HomePage({
     if (resultsFromServer.tunes && resultsFromServer.tunes.length > 0) {
       console.group(`resultsFromServer contains items`)
       setResultsStatus("checking results")
-      var resultsToCheck = false
 
       /* Check to see if we have a zero-results response. 
          We need to do this if a 'key' filter is being used, because some
@@ -298,6 +298,7 @@ export default function HomePage({
                 userPrefs={userPrefs}
                 preferredTuneSettings={preferredTuneSettings}
                 managePreferredTuneSettings={managePreferredTuneSettings}
+                tuneCache={tuneCache}
               />
             ))}
           </div>

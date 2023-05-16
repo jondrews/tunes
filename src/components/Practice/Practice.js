@@ -1,6 +1,7 @@
 import pluralize from "pluralize"
 import "./Practice.css"
 import PracticeTime from "../PracticeTime/PracticeTime"
+import { useEffect, useState } from "react"
 
 export default function Practice({
   practiceDiary,
@@ -50,10 +51,27 @@ export default function Practice({
 const WishlistItem = (props) => {
   const id = props.tune.tunes[0].tuneId
   const elapsed = Date.now() - props.tune.date
+  const [tuneObject, setTuneObject] = useState(null)
+
+  useEffect(() => {
+    const url = `https://thesession.org/tunes/${id}?format=json`
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setTuneObject(data))
+      .catch((error) =>
+        console.log("Error looking up tune details for WishlistItem:", error)
+      )
+  }, [id])
 
   return (
     <div className="practice-wishlist-item d-flex">
-      {id} added {elapsed} ago.
+      {tuneObject ? (
+        <p>
+          {tuneObject.name} ({id}) added {elapsed} ago.
+        </p>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   )
 }

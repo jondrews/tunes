@@ -2,10 +2,11 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 // import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
-
 import parseABC from "../../parseABC"
-import "./TuneResult.css"
+
 import types from "../../types.js"
+import getTune from "../getTune"
+import "./TuneResult.css"
 
 export default function TuneResult({
   id,
@@ -14,19 +15,24 @@ export default function TuneResult({
   setFilters,
   resetResults,
   userPrefs,
+  tuneCache,
 }) {
   const [tune, setTune] = useState()
   const [visible, setVisible] = useState(true)
   const navigate = useNavigate()
 
   const renderNotation = (element, tune, tuneType) => {
-    console.log('renderNotation tune object:', tune)
+    console.log(`tuneResult(${id}) renderNotation() tune object:`, tune)
     const incipit = /^([^|])*\|([^|]*\|){1,4}/.exec(parseABC(tune.abc))[0]
-    abcjs.renderAbc(element, `X:1\nM:${types[tuneType]}\nK:${tune.key}\n${incipit}\n`, {
-      responsive: "resize",
-      lineBreaks: [5, 10],
-      paddingtop: 0,
-    })
+    abcjs.renderAbc(
+      element,
+      `X:1\nM:${types[tuneType]}\nK:${tune.key}\n${incipit}\n`,
+      {
+        responsive: "resize",
+        lineBreaks: [5, 10],
+        paddingtop: 0,
+      }
+    )
   }
 
   const filterByTuneType = (tuneType) => {
@@ -61,53 +67,55 @@ export default function TuneResult({
   }, [tune, id])
 
   useEffect(() => {
-    console.log(`Fetching details for tune ${id}`)
-
-    const url = `https://thesession.org/tunes/${id}?format=json`
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(`Data for tune #${id}`, data)
-        // TODO: Override this if the user has a preffered tune setting in 
-        // a different key to the primary tune setting.
-        // determine if 'showOnlyPrimarySettings' filter is applicable
-        if (
-          userPrefs.showOnlyPrimarySettings &&
-          (filters.mode.key || filters.mode.modeType)
-        ) {
-          // only display this result if the FIRST setting matches user filters
+    if (id) {
+      getTune(id)
+        // console.log(`Fetching details for tune ${id}`)
+        // const url = `https://thesession.org/tunes/${id}?format=json`
+        // fetch(url)
+        //   .then((response) => response.json())
+        .then((data) => {
+          // console.log(`Data for tune #${id}`, data)
+          // TODO: Override this if the user has a preffered tune setting in
+          // a different key to the primary tune setting.
+          // determine if 'showOnlyPrimarySettings' filter is applicable
           if (
-            `${data.settings[0].key}` ===
-            `${
-              filters.mode.key +
-              (filters.mode.modeType ? filters.mode.modeType : "major")
-            }`
+            userPrefs.showOnlyPrimarySettings &&
+            (filters.mode.key || filters.mode.modeType)
           ) {
-            console.log(
-              `TUNE ${id}'s primary setting is in ${
-                data.settings[0].key
-              } --> (matches ${
+            // only display this result if the FIRST setting matches user filters
+            if (
+              `${data.settings[0].key}` ===
+              `${
                 filters.mode.key +
                 (filters.mode.modeType ? filters.mode.modeType : "major")
-              })`
-            )
-            setTune(data)
+              }`
+            ) {
+              console.log(
+                `TUNE ${id}'s primary setting is in ${
+                  data.settings[0].key
+                } --> (matches ${
+                  filters.mode.key +
+                  (filters.mode.modeType ? filters.mode.modeType : "major")
+                })`
+              )
+              setTune(data)
+            } else {
+              console.log(
+                `TUNE ${id}'s primary setting is in ${
+                  data.settings[0].key
+                } --> HIDING (no match: ${
+                  filters.mode.key +
+                  (filters.mode.modeType ? filters.mode.modeType : "major")
+                })`
+              )
+              setVisible(false)
+            }
           } else {
-            console.log(
-              `TUNE ${id}'s primary setting is in ${
-                data.settings[0].key
-              } --> HIDING (no match: ${
-                filters.mode.key +
-                (filters.mode.modeType ? filters.mode.modeType : "major")
-              })`
-            )
-            setVisible(false)
+            setTune(data)
           }
-        } else {
-          setTune(data)
-        }
-      })
-  }, [filters, userPrefs])
+        })
+    }
+  }, [filters, userPrefs, id])
 
   return (
     visible &&

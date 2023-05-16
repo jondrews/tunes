@@ -225,11 +225,11 @@ export default function TuneNotation({
                 (comment) =>
                   comment.member.id ===
                     tuneObject.settings[tuneSetting].member.id && (
-                    <TuneComment comment={comment} />
+                    <TuneComment comment={comment} key={`comment${comment.id}`} />
                   )
               )
             : tuneObject.comments.map((comment) => (
-                <TuneComment comment={comment} />
+                <TuneComment comment={comment} key={`comment${comment.id}`} />
               ))}
         </div>
       )}
@@ -245,7 +245,6 @@ export default function TuneNotation({
 }
 
 const TuneComment = ({ comment }) => {
-  const commentDate = new Date(comment.date)
   return (
     <div className="TuneComment d-flex align-items-center">
       <div className="author-info d-flex flex-column m-3">
