@@ -2,6 +2,10 @@ import pluralize from "pluralize"
 import "./Practice.css"
 import PracticeTime from "../PracticeTime/PracticeTime"
 import { useEffect, useState } from "react"
+import getTune from "../../helpers/getTune"
+import moment from "moment"
+import MusicNoteIcon from "@mui/icons-material/MusicNote"
+import { grey } from "@mui/material/colors"
 
 export default function Practice({
   practiceDiary,
@@ -13,9 +17,11 @@ export default function Practice({
     <div className="Practice">
       <div className="practice-wishlist d-flex flex-column">
         <h3>My practice wishlist:</h3>
-        {practiceDiary.getWishlist().tunes.map((tune) => (
-          <WishlistItem tune={tune} key={`wishlist-${tune.date}`} />
-        ))}
+        <ul className="practice-wishlist-item">
+          {practiceDiary.getWishlist().tunes.map((tune) => (
+            <WishlistItem tune={tune} key={`wishlist-${tune.date}`} />
+          ))}
+        </ul>
       </div>
 
       <div className="practice-diary">
@@ -49,29 +55,23 @@ export default function Practice({
 }
 
 const WishlistItem = (props) => {
-  const id = props.tune.tunes[0].tuneId
-  const elapsed = Date.now() - props.tune.date
   const [tuneObject, setTuneObject] = useState(null)
+  const id = props.tune.tunes[0].tuneId
 
   useEffect(() => {
-    const url = `https://thesession.org/tunes/${id}?format=json`
-    fetch(url)
-      .then((response) => response.json())
+    getTune(id)
       .then((data) => setTuneObject(data))
       .catch((error) =>
         console.log("Error looking up tune details for WishlistItem:", error)
       )
   }, [id])
 
-  return (
-    <div className="practice-wishlist-item d-flex">
-      {tuneObject ? (
-        <p>
-          {tuneObject.name} ({id}) added {elapsed} ago.
-        </p>
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
+  return tuneObject ? (
+    <li>
+      <MusicNoteIcon fontSize="small" sx={{ color: grey[700] }} />
+      {tuneObject.name} ({id}) added {moment(props.tune.date).fromNow()}.
+    </li>
+  ) : (
+    <li>Loading...</li>
   )
 }

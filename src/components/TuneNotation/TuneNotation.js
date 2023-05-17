@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react"
 import moment from "moment"
 import abcjs from "abcjs"
@@ -9,6 +9,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import parseABC from "../../parseABC"
 import "./TuneNotation.css"
 import types from "../../types.js"
+import getTune from "../../helpers/getTune"
 
 export default function TuneNotation({
   practiceDiary,
@@ -25,6 +26,8 @@ export default function TuneNotation({
   })
 
   const notation = document.getElementById("notation")
+  const pageRoute = useLocation().pathname
+
   const openFullscreen = () => {
     if (notation.requestFullscreen) {
       notation.requestFullscreen()
@@ -51,17 +54,13 @@ export default function TuneNotation({
   useEffect(() => {
     window.addEventListener("resize", handleResize)
     handleResize()
-    const url = `https://thesession.org/tunes/${params.tuneId}?format=json`
     if (params.tuneId) {
       // check if user has a preferred setting for this tune
       setTuneSetting(preferredSettings[params.tuneId] || 0)
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          setTuneObject(data)
-          console.log(`tuneObject for tune ${params.tuneId}:`, data)
-        })
-        .catch((error) => console.log(`.catch method caught an error!`, error))
+      getTune(params.tuneId).then((data) => {
+        setTuneObject(data)
+        console.log(`tuneObject for tune ${params.tuneId}:`, data)
+      })
     }
     return () => {
       window.removeEventListener("resize", handleResize)
@@ -77,7 +76,9 @@ export default function TuneNotation({
       )
       abcjs.renderAbc(
         "notation",
-        `X:1\nT:${tuneObject.name}\nM:${types[tuneObject.type]}\nK:${tuneObject.settings[tuneSetting].key}\n${abc}\n`,
+        `X:1\nT:${tuneObject.name}\nM:${types[tuneObject.type]}\nK:${
+          tuneObject.settings[tuneSetting].key
+        }\n${abc}\n`,
         {
           staffwidth: dimensions.width * 0.9,
           wrap: {
@@ -128,12 +129,18 @@ export default function TuneNotation({
           <div className="setting-author">
             Setting by:{" "}
             <a
-              href={tuneObject.settings[tuneSetting].member.url}
+              href={
+                tuneObject.settings[tuneSetting].member
+                  ? tuneObject.settings[tuneSetting].member.url
+                  : "Unknown author"
+              }
               target="_blank"
               rel="noreferrer"
               className="thesession-member-link"
             >
-              {tuneObject.settings[tuneSetting].member.name}
+              {tuneObject.settings[tuneSetting].member
+                ? tuneObject.settings[tuneSetting].member.name
+                : "Unknown author"}
             </a>
           </div>
           {preferredSettings[params.tuneId] === tuneSetting ? (
@@ -166,7 +173,6 @@ export default function TuneNotation({
           )}
         </div>
       )}
-
 
       <div className="notation" id="notation"></div>
 
@@ -205,8 +211,12 @@ export default function TuneNotation({
           <div className="tune-comments-header d-flex align-items-baseline">
             <h6 className="m-3">
               {commentsByAuthorOnly
-                ? "Comments by this setting's author: "
-                : "All comments on this tune"}
+                ? `Comments by ${
+                    tuneObject.settings[tuneSetting].member
+                      ? tuneObject.settings[tuneSetting].member.name
+                      : "Unknown author"
+                  }: `
+                : "All comments"}
             </h6>
             <button
               className="btn btn-sm btn-outline-secondary p-0"
@@ -216,7 +226,11 @@ export default function TuneNotation({
             >
               {commentsByAuthorOnly
                 ? "show all comments"
-                : "setting author's comments only"}
+                : `comments by ${
+                    tuneObject.settings[tuneSetting].member
+                      ? tuneObject.settings[tuneSetting].member.name
+                      : "Unknown author"
+                  }`}
             </button>
           </div>
 
@@ -225,21 +239,27 @@ export default function TuneNotation({
                 (comment) =>
                   comment.member.id ===
                     tuneObject.settings[tuneSetting].member.id && (
-                    <TuneComment comment={comment} key={`comment${comment.id}`} />
+                    <TuneComment
+                      comment={comment}
+                      key={`comment-${comment.id}`}
+                    />
                   )
               )
             : tuneObject.comments.map((comment) => (
-                <TuneComment comment={comment} key={`comment${comment.id}`} />
+                <TuneComment comment={comment} key={`comment-${comment.id}`} />
               ))}
-        </div>
+        </div> /* tune comments */
       )}
     </div>
   ) : (
     <div className="no-tune-selected">
       <h2>No tune selected</h2>
-      <p>
-        Head to the <Link to="/">homepage</Link> to find one
-      </p>
+      {pageRoute === "/tune" && (
+        <p>
+          Head to the <Link to="/">homepage</Link> to find one
+        </p>
+      )}
+      {pageRoute === "/tunebook" && <p>Select a tune from your tunebook</p>}
     </div>
   )
 }
@@ -250,11 +270,11 @@ const TuneComment = ({ comment }) => {
       <div className="author-info d-flex flex-column m-3">
         <a
           className="comment-author"
-          href={comment.member.url}
+          href={comment.member ? comment.member.url : ""}
           target="_blank"
           rel="noreferrer"
         >
-          {comment.member.name}
+          {comment.member ? comment.member.name : "Unknown author"}
         </a>
         <div className="comment-age d-flex flex-nowrap flex-shrink-0">
           {moment(comment.date).fromNow()}

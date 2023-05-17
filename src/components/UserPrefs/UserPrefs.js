@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import getTune from "../../helpers/getTune"
 import "./UserPrefs.css"
 
 export default function UserPrefs({
@@ -66,11 +66,10 @@ export default function UserPrefs({
 function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
   const [loaded, setLoaded] = useState(false)
   const [tuneObject, setTuneObject] = useState({})
-  const navigate = useNavigate()
 
   const handleClick = (event, callback, ...args) => {
     callback(...args)
-    // stop the click from propagating up the DOM to parent(s)
+    // Prevent click propagating up the DOM to parent(s)
     // https://stackoverflow.com/a/2385131/5474303
     if (!event) event = window.event
     event.cancelBubble = true
@@ -79,9 +78,7 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
 
   useEffect(() => {
     setLoaded(false)
-    const url = `https://thesession.org/tunes/${tuneId}?format=json`
-    fetch(url)
-      .then((response) => response.json())
+    getTune(tuneId)
       .then((data) => {
         setTuneObject(data)
       })

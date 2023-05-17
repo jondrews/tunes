@@ -5,7 +5,7 @@ import abcjs from "abcjs"
 import parseABC from "../../parseABC"
 
 import types from "../../types.js"
-import getTune from "../getTune"
+import getTune from "../../helpers/getTune"
 import "./TuneResult.css"
 
 export default function TuneResult({
@@ -69,12 +69,7 @@ export default function TuneResult({
   useEffect(() => {
     if (id) {
       getTune(id)
-        // console.log(`Fetching details for tune ${id}`)
-        // const url = `https://thesession.org/tunes/${id}?format=json`
-        // fetch(url)
-        //   .then((response) => response.json())
         .then((data) => {
-          // console.log(`Data for tune #${id}`, data)
           // TODO: Override this if the user has a preffered tune setting in
           // a different key to the primary tune setting.
           // determine if 'showOnlyPrimarySettings' filter is applicable

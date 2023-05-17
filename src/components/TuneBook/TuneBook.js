@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react"
-import { NavLink } from "react-router-dom"
+
+import TuneSelection from "./TuneSelection"
+import TuneNotation from "../TuneNotation/TuneNotation"
+import getMyTunebook from "../../helpers/getMyTunebook"
+
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import Button from "react-bootstrap/Button"
 import Offcanvas from "react-bootstrap/Offcanvas"
-
-import TuneNotation from "../TuneNotation/TuneNotation"
 import "./TuneBook.css"
 
-export default function TuneBook(props) {
+export default function TuneBook({
+  filters,
+  setFilters,
+  userPrefs,
+  setUserPrefs,
+  practiceDiary,
+  preferredSettings,
+  managePreferredSettings,
+}) {
   const [show, setShow] = useState(false)
   const [thesessionTunebook, setThesessionTunebook] = useState({})
   const [thesessionTunebookLoaded, setThesessionTunebookLoaded] =
@@ -16,61 +26,11 @@ export default function TuneBook(props) {
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
 
-  const thesessionTuneSelection = () => {
-    return props.userPrefs.thesessionMemberId ? (
-      thesessionTunebookLoaded ? (
-        thesessionTunebook.tunes && thesessionTunebook.tunes.length > 0 ? (
-          <div className="tune-selection thesession-tunebook loaded d-flex flex-column">
-            <div className="tune-selection-header expandible">
-              <h3 className="expandible-header">
-                {thesessionTunebook.tunes.length} tunes in your thesession.org
-                tunebook:
-              </h3>
-            </div>
-            {thesessionTunebook.tunes.map((entry) => (
-              <NavLink
-                className="tune-item d-flex"
-                tabIndex="0"
-                key={entry.url}
-                to={`./tune/${entry.id}`}
-              >
-                {props.practiceDiary.containsTune(entry.id) && (
-                  <div className="isInPracticeDiary">&#x2022;</div>
-                )}
-                <div className="tune-item-title">{entry.name}</div>
-              </NavLink>
-            ))}
-          </div>
-        ) : (
-          <div className="tune-selection thesession-tunebook empty">
-            <p>No tunes in your thesession.org tunebook</p>
-          </div>
-        )
-      ) : (
-        <div className="tune-selection thesession-tunebook loading">
-          Loading your tunebook from thesession.org...
-        </div>
-      )
-    ) : (
-      <div className="tune-selection thesession-tunebook nomembernumber">
-        thesession.org member number not set
-      </div>
-    )
-  }
-
   // Fetch user's thesession.org tunebook on mount (if thesession.org ID provided)
   useEffect(() => {
-    if (props.userPrefs.thesessionMemberId) {
-      const thesessionTunebookUrl = `https://thesession.org/members/${props.userPrefs.thesessionMemberId}/tunebook?format=json`
-      console.log(
-        `Looking up thesession.org tunebook for member ${props.userPrefs.thesessionMemberId}`
-      )
-      fetch(thesessionTunebookUrl)
-        .then((response) => response.json())
+    if (userPrefs.thesessionMemberId) {
+      getMyTunebook(userPrefs.thesessionMemberId)
         .then((data) => {
-          console.log(
-            `--> Found ${data.total} tunes in thesession.org tunebook for member ${props.userPrefs.thesessionMemberId}`
-          )
           setThesessionTunebook(data)
           setThesessionTunebookLoaded(true)
         })
@@ -78,7 +38,7 @@ export default function TuneBook(props) {
           console.log("error fething thesession.org tunebook:", error)
         })
     }
-  }, [props.userPrefs.thesessionMemberId])
+  }, [userPrefs.thesessionMemberId])
 
   return (
     <div className="TuneBook">
@@ -95,16 +55,21 @@ export default function TuneBook(props) {
 
       <div className="score-area d-flex">
         <div className="tune-selection-large d-none d-lg-block">
-          {thesessionTuneSelection()}
+          <TuneSelection
+            thesessionTunebook={thesessionTunebook}
+            thesessionTunebookLoaded={thesessionTunebookLoaded}
+            userPrefs={userPrefs}
+            practiceDiary={practiceDiary}
+          />
         </div>
         <TuneNotation
-          filters={props.filters}
-          setFilters={props.setFilters}
-          userPrefs={props.userPrefs}
-          setUserPrefs={props.setUserPrefs}
-          practiceDiary={props.practiceDiary}
-          preferredSettings={props.preferredSettings}
-          managePreferredSettings={props.managePreferredSettings}
+          filters={filters}
+          setFilters={setFilters}
+          userPrefs={userPrefs}
+          setUserPrefs={setUserPrefs}
+          practiceDiary={practiceDiary}
+          preferredSettings={preferredSettings}
+          managePreferredSettings={managePreferredSettings}
         />
       </div>
 
@@ -113,7 +78,14 @@ export default function TuneBook(props) {
           <Offcanvas.Title>My tunebook</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <div>{thesessionTuneSelection()}</div>
+          <div>
+            <TuneSelection
+              thesessionTunebook={thesessionTunebook}
+              thesessionTunebookLoaded={thesessionTunebookLoaded}
+              userPrefs={userPrefs}
+              practiceDiary={practiceDiary}
+            />
+          </div>
         </Offcanvas.Body>
       </Offcanvas>
     </div>
