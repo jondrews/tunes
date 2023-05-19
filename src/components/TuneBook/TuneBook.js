@@ -19,9 +19,9 @@ export default function TuneBook({
   managePreferredSettings,
 }) {
   const [show, setShow] = useState(false)
-  const [thesessionTunebook, setThesessionTunebook] = useState({})
-  const [thesessionTunebookLoaded, setThesessionTunebookLoaded] =
-    useState(false)
+  const [tunebook, setTunebook] = useState({})
+  const [tunebookLoaded, setTunebookLoaded] = useState(false)
+  const [selectionList, setSelectionList] = useState([])
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -31,14 +31,30 @@ export default function TuneBook({
     if (userPrefs.thesessionMemberId) {
       getMyTunebook(userPrefs.thesessionMemberId)
         .then((data) => {
-          setThesessionTunebook(data)
-          setThesessionTunebookLoaded(true)
+          console.log(`Tunebook retrieved:`, data)
+          setTunebook(data)
+          return data
+        })
+        .then((_) => {
+          setTunebookLoaded(true)
+          console.log('Tunebook loaded!')
         })
         .catch((error) => {
           console.log("error fething thesession.org tunebook:", error)
         })
     }
   }, [userPrefs.thesessionMemberId])
+
+  // When loaded, build a list of combined tunes and sets
+  useEffect(() => {
+    if (tunebookLoaded) {
+      console.log('Setting selectionList')
+
+      // TODO: Sort & filter this list
+
+      setSelectionList(tunebook)
+    }
+  }, [tunebookLoaded])
 
   return (
     <div className="TuneBook">
@@ -56,10 +72,11 @@ export default function TuneBook({
       <div className="score-area d-flex">
         <div className="tune-selection-large d-none d-lg-block">
           <TuneSelection
-            thesessionTunebook={thesessionTunebook}
-            thesessionTunebookLoaded={thesessionTunebookLoaded}
+            tunebook={tunebook}
+            tunebookLoaded={tunebookLoaded}
             userPrefs={userPrefs}
             practiceDiary={practiceDiary}
+            selectionList={selectionList}
           />
         </div>
         <TuneNotation
@@ -80,10 +97,11 @@ export default function TuneBook({
         <Offcanvas.Body>
           <div>
             <TuneSelection
-              thesessionTunebook={thesessionTunebook}
-              thesessionTunebookLoaded={thesessionTunebookLoaded}
+              tunebook={tunebook}
+              tunebookLoaded={tunebookLoaded}
               userPrefs={userPrefs}
               practiceDiary={practiceDiary}
+              selectionList={selectionList}
             />
           </div>
         </Offcanvas.Body>

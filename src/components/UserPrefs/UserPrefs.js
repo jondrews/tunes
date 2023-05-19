@@ -15,7 +15,10 @@ export default function UserPrefs({
   managePreferredSettings,
 }) {
   const updateUserPref = (key, value) => {
+    // Update userPrefs state
     setUserPrefs((prevPrefs) => ({ ...prevPrefs, [key]: value }))
+    // Save userPrefs to localStorage
+    localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
   }
 
   const handleInputChange = (key, event) => {
@@ -49,14 +52,23 @@ export default function UserPrefs({
       <div className="preferred-settings">
         <h3>My preferred tune settings:</h3>
         <ul>
-          {Object.entries(preferredSettings).map(([tuneId, settingId]) => (
-            <PreferredTuneSetting
-              key={`${tuneId}+${settingId}`}
-              tuneId={tuneId}
-              settingId={settingId}
-              managePreferredSettings={managePreferredSettings}
-            />
-          ))}
+          {/* List of preferred tune settings, if any exist */}
+          {Object.entries(preferredSettings).length > 0 &&
+            Object.entries(preferredSettings).map(([tuneId, settingId]) => (
+              <PreferredTuneSetting
+                key={`${tuneId}+${settingId}`}
+                tuneId={tuneId}
+                settingId={settingId}
+                managePreferredSettings={managePreferredSettings}
+              />
+            ))}
+
+          {/* User has no preferred tune settings */}
+          {Object.entries(preferredSettings).length === 0 && (
+            <li className="settings-list loaded empty">
+              No preferred tune settings, yet.
+            </li>
+          )}
         </ul>
       </div>
     </div>

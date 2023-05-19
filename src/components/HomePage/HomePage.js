@@ -44,14 +44,14 @@ export default function HomePage({
   }
 
   const addNonDuplicates = () => {
-    console.log(
+    console.group(
       `addNonDuplicates() called: Checking for duplicates that are already in resultsDisplay`
     )
     const checkedData = { ...resultsFromServer, tunes: [] }
     resultsFromServer.tunes.forEach((result) => {
       if (isInResultsDisplay(result.id)) {
         console.log(
-          `######### Tune #${result.id} is already in resultsDisplay. OMITTING #############`
+          `Omitting Tune #${result.id} ########`
         )
         setDuplicates(duplicates + 1)
       } else {
@@ -59,12 +59,15 @@ export default function HomePage({
         checkedData.tunes.push({ ...result })
       }
     })
-    console.log("checkedData - setting checkedResults state:", checkedData)
+    console.log("addNonDuplicates(): checkedData output", checkedData)
+    console.groupEnd()
     setCheckedResults(checkedData)
     setResultsStatus("results found")
-    console.groupEnd()
+
     // clear resultsFromServer, ready for next set of results from API
+    console.log('Clearing resultsFromServer')
     setResultsFromServer({})
+    console.groupEnd()
   }
 
   const isInResultsDisplay = (tuneId) => {
@@ -76,8 +79,8 @@ export default function HomePage({
      Triggered by change in 'page' or 'filters' state.
      ------------------------------------------------------------------------*/
   useEffect(() => {
-    console.log("=== useEffect() #1 called ===")
     if (resultsStatus !== ("searching" || "checking results")) {
+      console.group("=== useEffect() #1 triggered ===")
       const filterString = `type=${filters.type}&mode=${
         filters.mode.key
           ? filters.mode.key + (filters.mode.modeType || "major")
@@ -99,6 +102,7 @@ export default function HomePage({
           setResultsStatus("error")
         })
     }
+    console.groupEnd()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, filters])
 
@@ -107,9 +111,8 @@ export default function HomePage({
      Triggered by change in 'resultsFromServer' state. 
      ----------------------------------------------------------------------- */
   useEffect(() => {
-    console.log("=== useEffect() #2 called ===")
     if (resultsFromServer.tunes && resultsFromServer.tunes.length > 0) {
-      console.group(`resultsFromServer contains items`)
+      console.group("=== useEffect() #2 triggered ===")
       setResultsStatus("checking results")
 
       /* Check to see if we have a zero-results response. 
@@ -162,10 +165,8 @@ export default function HomePage({
         setTotalResults(resultsFromServer.total)
         addNonDuplicates()
       }
-    } else {
-      // resultsFromServer changed, but resultsFromServer.tunes is zero-length
-      console.log(`resultsFromServer empty`)
     }
+    console.groupEnd()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resultsFromServer])
 
@@ -173,13 +174,14 @@ export default function HomePage({
      3. Build a list of <TuneResult> components for rendering to UI
      ----------------------------------------------------------------------- */
   useEffect(() => {
-    console.log("=== useEffect() #3 called ===")
     if (checkedResults.tunes && checkedResults.tunes.length > 0) {
+      console.group("=== useEffect() #3 triggered ===")
       checkedResults.tunes.forEach((tune) => {
         console.log(`Adding tune #${tune.id} to resultsDisplay`)
         setResultsDisplay((oldResults) => [...oldResults, tune])
       })
     }
+    console.groupEnd()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedResults])
 

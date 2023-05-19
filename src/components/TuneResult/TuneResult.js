@@ -64,6 +64,7 @@ export default function TuneResult({
 
   useEffect(() => {
     tune && renderNotation(`${id}incipit`, tune.settings[0], tune.type)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tune, id])
 
   useEffect(() => {

@@ -17,7 +17,7 @@ export default function Practice({
     <div className="Practice">
       <div className="practice-wishlist d-flex flex-column">
         <h3>My practice wishlist:</h3>
-        <ul className="practice-wishlist-item">
+        <ul className="pactice-wishlist-list">
           {practiceDiary.getWishlist().tunes.map((tune) => (
             <WishlistItem tune={tune} key={`wishlist-${tune.date}`} />
           ))}
@@ -67,7 +67,7 @@ const WishlistItem = (props) => {
   }, [id])
 
   return tuneObject ? (
-    <li>
+    <li className="pactice-wishlist-item">
       <MusicNoteIcon fontSize="small" sx={{ color: grey[700] }} />
       {tuneObject.name} ({id}) added {moment(props.tune.date).fromNow()}.
     </li>

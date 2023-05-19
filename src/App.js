@@ -12,10 +12,11 @@ import "./App.css"
 
 const App = () => {
   const [practiceDiaryEntries, setPracticeDiaryEntries] = useState([]) // array of Objects
+  const [practiceDiaryLoaded, setPracticeDiaryLoaded] = useState(false)
   const [preferredTuneSettings, setPreferredTuneSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
   const [prefTuneSettingsLoaded, setPrefTuneSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
   const [userPrefs, setUserPrefs] = useState({})
-  const [practiceDiaryLoaded, setPracticeDiaryLoaded] = useState(false)
+  const [userPrefsLoaded, setUserPrefsLoaded] = useState(false)
   const [filters, setFilters] = useState({
     type: "",
     mode: { key: "", modeType: "" },
@@ -25,9 +26,9 @@ const App = () => {
   })
 
   const defaultUserPrefs = {
-    thesessionMemberId: 151540,
+    thesessionMemberId: 0,
     showOnlyPrimarySettings: true, // only return a tune result if its FIRST setting matches the filters (otherwise return the tune result if ANY setting matches filters)
-    mostRecentInstrument: "mandolin",
+    mostRecentInstrument: "defaultstrument",
     customInstrumentsList: [],
   }
 
@@ -110,13 +111,14 @@ const App = () => {
     }
   }
 
+  // LOAD preferred tune settings on mount
   useEffect(() => {
-    console.log("Loading preferredSettings from localStorage")
+    console.log("App.js useEffect(): Load preferredSettings on mount")
     const savedPreferredSettings = JSON.parse(
       localStorage.getItem("preferredSettings")
     )
     if (savedPreferredSettings) {
-      console.log("Loaded preferredSettings:", savedPreferredSettings)
+      console.log("Found preferredSettings in localStorage:", savedPreferredSettings)
       setPreferredTuneSettings(savedPreferredSettings)
     } else {
       console.log("No saved preferredSettings found")
@@ -124,47 +126,25 @@ const App = () => {
     setPrefTuneSettingsLoaded(true)
   }, [])
 
-  // Load user prefs on mount
+  // LOAD user preferences on mount
   useEffect(() => {
-    console.group("Loading UserPrefs:")
+    console.group("App.js useEffect(): Load userPrefs on mount")
     const savedUserPrefs = JSON.parse(localStorage.getItem("userPrefs"))
     if (savedUserPrefs) {
-      const newUserPrefs = {}
-      Object.keys(defaultUserPrefs).forEach((featureName) => {
-        if (featureName in savedUserPrefs) {
-          console.log(`Found ${featureName}: ${savedUserPrefs[featureName]}`)
-          newUserPrefs[featureName] = savedUserPrefs[featureName]
-        } else {
-          console.log(
-            `NOT FOUND ${featureName} - Using default value: ${savedUserPrefs[featureName]}`
-          )
-          newUserPrefs[featureName] = defaultUserPrefs[featureName]
-        }
-      })
-      setUserPrefs(newUserPrefs)
+      console.log("Found saved savedUserPrefs")
+      setUserPrefs(savedUserPrefs)
     } else {
       console.log("No saved savedUserPrefs found - setting all to defaults.")
       setUserPrefs(defaultUserPrefs)
     }
     console.groupEnd()
+    setUserPrefsLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /*
-  const saveUserPrefs = () => {
-    console.group("saveUserPrefs:")
-    console.log("Saving userPrefs as:", userPrefs)
-    localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
-    console.groupEnd()
-  }
-
-  const updateUserPref = (key, value) => {
-    setUserPrefs((prevPrefs) => ({ ...prevPrefs, [key]: value }))
-  }
-  */
-
+  // LOAD practice diary on mount
   useEffect(() => {
-    console.log("Loading practiceDiary from localStorage")
+    console.group("App.js useEffect(): Load practice diary on mount")
     const savedPracticeDiary = JSON.parse(localStorage.getItem("practiceDiary"))
     if (savedPracticeDiary) {
       console.log("Loaded practiceDiary:", savedPracticeDiary)
@@ -173,18 +153,32 @@ const App = () => {
       console.log("No saved practiceDiary found")
     }
     setPracticeDiaryLoaded(true)
+    console.groupEnd()
   }, [])
 
+  // SAVE preferred tune settings when they change, if already mounted
   useEffect(() => {
     if (prefTuneSettingsLoaded) {
       console.log("Saving preferredSettings as:", preferredTuneSettings)
       localStorage.setItem(
         "preferredSettings",
         JSON.stringify(preferredTuneSettings)
-      )
-    }
-  }, [preferredTuneSettings, prefTuneSettingsLoaded])
+        )
+      }
+    }, [preferredTuneSettings, prefTuneSettingsLoaded])
 
+  // SAVE user preferences when they change, if already mounted
+  useEffect(() => {
+    if (userPrefsLoaded) {
+      console.log("Saving userPrefs as:", userPrefs)
+      localStorage.setItem(
+        "userPrefs",
+        JSON.stringify(userPrefs)
+        )
+      }
+    }, [userPrefs, userPrefsLoaded])
+    
+  // SAVE practice diary when it changes, if already mounted
   useEffect(() => {
     if (practiceDiaryLoaded) {
       console.log("Saving practiceDiary as:", practiceDiaryEntries)
