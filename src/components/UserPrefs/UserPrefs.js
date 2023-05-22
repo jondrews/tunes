@@ -35,7 +35,6 @@ export default function UserPrefs({
     <div className="UserPrefs">
       <div className="app-prefs">
         <h3>App preferences:</h3>
-
         <form className="app-prefs-list d-flex flex-column">
           {Object.entries(userPrefs).map(([appFeature, userPref]) => (
             <AppFeaturePref

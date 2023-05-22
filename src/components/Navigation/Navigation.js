@@ -46,6 +46,9 @@ export default function Navigation(props) {
             <NavLink to="/practice" className="nav-link">
               Practice
             </NavLink>
+            <NavLink to="/record" className="nav-link">
+              Record
+            </NavLink>
             <NavLink to="/prefs" className="nav-link">
               Preferences
             </NavLink>

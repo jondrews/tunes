@@ -54,7 +54,7 @@ export default function TuneBook({
 
       setSelectionList(tunebook)
     }
-  }, [tunebookLoaded])
+  }, [tunebookLoaded, tunebook])
 
   return (
     <div className="TuneBook">
@@ -70,7 +70,7 @@ export default function TuneBook({
       </div>
 
       <div className="score-area d-flex">
-        <div className="tune-selection-large d-none d-lg-block">
+        <div className="tune-selection d-none d-lg-block">
           <TuneSelection
             tunebook={tunebook}
             tunebookLoaded={tunebookLoaded}

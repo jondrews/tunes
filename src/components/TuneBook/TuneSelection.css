@@ -1,6 +1,47 @@
-.scrollContainer {
-  white-space: nowrap;
-  overflow: hidden;
-  /* border: 1px solid orangered; */
+.list-selection .expandible {
+  width: 100%;
+  color: red;
+  min-width: 250px;
 }
 
+.expandible-header {
+  font-size: smaller;
+}
+
+.TuneBook .list-selection {
+  width: 25%;
+  min-width: 250px;
+}
+
+.TuneBook .open-tunebook {
+  width: 10rem;
+  border-radius: 0px 10px 10px 0px;
+  padding: 5px 10px 5px 0px;
+}
+
+.TuneBook .list-item, .offcanvas-body .list-item {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--bs-black);
+  width: 100%;
+  border: 1px solid gray;
+  margin: 5px;
+  padding: 5px;
+}
+.TuneBook .list-item.active, .offcanvas-body .list-item.active {
+  border: 2px solid red;
+}
+
+.TuneBook .isInPracticeDiary, .offcanvas-body .isInPracticeDiary {
+  color: green;
+}
+
+.list-item-titles-container {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.list-item-sub-title-scrolling {
+  font-size: small;
+  color: var(--text-muted)
+}

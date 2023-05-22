@@ -7,6 +7,7 @@ import TuneNotation from "./components/TuneNotation/TuneNotation"
 import TuneBook from "./components/TuneBook/TuneBook"
 import Navigation from "./components/Navigation/Navigation"
 import Practice from "./components/Practice/Practice"
+import Record from "./components/Record/Record"
 import UserPrefs from "./components/UserPrefs/UserPrefs"
 import "./App.css"
 
@@ -15,6 +16,7 @@ const App = () => {
   const [practiceDiaryLoaded, setPracticeDiaryLoaded] = useState(false)
   const [preferredTuneSettings, setPreferredTuneSettings] = useState({}) // {tuneID: setting} pairs (setting is zero-indexed)
   const [prefTuneSettingsLoaded, setPrefTuneSettingsLoaded] = useState(false) // prevents saving a blank object as preferredSettings before the useEffect() hook loads it for the first time
+  const [recordings, setRecordings] = useState([])
   const [userPrefs, setUserPrefs] = useState({})
   const [userPrefsLoaded, setUserPrefsLoaded] = useState(false)
   const [filters, setFilters] = useState({
@@ -30,6 +32,7 @@ const App = () => {
     showOnlyPrimarySettings: true, // only return a tune result if its FIRST setting matches the filters (otherwise return the tune result if ANY setting matches filters)
     mostRecentInstrument: "defaultstrument",
     customInstrumentsList: [],
+    recordingsDirectory: '/recordings'
   }
 
   const practiceDiaryContainsTune = (findThisTuneId) => {
@@ -312,6 +315,23 @@ const App = () => {
               }
             />
           </Route>
+
+          <Route
+            path="/record"
+            element={
+              <Record
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                preferredTuneSettings={preferredTuneSettings}
+                managePreferredTuneSettings={managePreferredTuneSettings}
+                recordings={recordings} 
+                setRecordings={setRecordings}
+              />
+            }
+          />
 
           <Route
             path="/prefs"
