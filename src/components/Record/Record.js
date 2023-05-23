@@ -1,5 +1,5 @@
 import TuneRecorder from "./TuneRecorder"
-// import TuneRecording from "./TuneRecording"
+import TuneRecording from "./TuneRecording"
 import "./Record.css"
 
 export default function Record({ recordings, setRecordings }) {
@@ -32,21 +32,23 @@ export default function Record({ recordings, setRecordings }) {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery#mediastream_recording
 
     <div className="Record">
-      Record
-      <div className="TuneRecorder-container">
-        <TuneRecorder />
-      </div>
+      <TuneRecorder setRecordings={setRecordings} />
 
-      {/* <div className="recordings-container">
+      <div className="recordings-container">
         <div className="recordings-header">
           <h2>My recordings: ({recordings.length})</h2>
         </div>
         <div className="recordings-list d-flex flex-column">
-            {recordings.map((recording) => {
-              return(<Recording recording={recording} key={recording.date} />)
-            })}
+          {recordings.map((recording, idx) => {
+            return (
+              <TuneRecording
+                recording={recording}
+                key={`${recording.date.toMillis()}`}
+              />
+            )
+          })}
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }

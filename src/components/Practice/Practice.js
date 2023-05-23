@@ -1,9 +1,9 @@
 import pluralize from "pluralize"
+import { DateTime } from "luxon"
 import "./Practice.css"
 import PracticeTime from "../PracticeTime/PracticeTime"
 import { useEffect, useState } from "react"
 import getTune from "../../helpers/getTune"
-import moment from "moment"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import { grey } from "@mui/material/colors"
 
@@ -18,8 +18,8 @@ export default function Practice({
       <div className="practice-wishlist d-flex flex-column">
         <h3>My practice wishlist:</h3>
         <ul className="pactice-wishlist-list">
-          {practiceDiary.getWishlist().tunes.map((tune) => (
-            <WishlistItem tune={tune} key={`wishlist-${tune.date}`} />
+          {practiceDiary.getWishlist().tunes.map((tune, idx) => (
+            <WishlistItem tune={tune} key={`wishlist-${idx}`} />
           ))}
         </ul>
       </div>
@@ -27,13 +27,13 @@ export default function Practice({
       <div className="practice-diary">
         <h3>My practice diary:</h3>
         {practiceDiary.loaded &&
-          practiceDiary.entries.map((practiceSession) => (
-            <div key={practiceSession.date}>
+          practiceDiary.entries.map((practiceSession, idx) => (
+            <div key={`session-${idx}`}>
               {/* TODO: Try checking for setId in the practiceSession object
                 and bypassing the .map method if it's not defined.          */}
-              {practiceSession.tunes.map((tune) => (
+              {practiceSession.tunes.map((tune, idx) => (
                 <div
-                  key={`${practiceSession.date} + ${tune.tuneId} + ${tune.settingId}`}
+                  key={`tune-${idx}`}
                 >
                   {pluralize("Tune", practiceSession.tunes.length)}{" "}
                   {tune.tuneId}, Setting {tune.settingId}
@@ -69,7 +69,8 @@ const WishlistItem = (props) => {
   return tuneObject ? (
     <li className="pactice-wishlist-item">
       <MusicNoteIcon fontSize="small" sx={{ color: grey[700] }} />
-      {tuneObject.name} ({id}) added {moment(props.tune.date).fromNow()}.
+      {tuneObject.name} ({id}) added{" "}
+      {DateTime.fromISO(props.tune.date).toRelative()}
     </li>
   ) : (
     <li>Loading...</li>

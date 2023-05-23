@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { DateTime } from "luxon"
 
 import HomePage from "./components/HomePage/HomePage"
 import PageNotFound from "./components/PageNotFound/PageNotFound"
@@ -76,7 +77,7 @@ const App = () => {
   const addToPracticeDiary = (newPracticeSession) => {
     if (typeof newPracticeSession === "object") {
       console.group("Adding a new practice session to practiceDiary")
-      newPracticeSession.date = Date.now()
+      newPracticeSession.date = DateTime.now()
       console.log("newPracticeSession =", newPracticeSession)
       setPracticeDiaryEntries([newPracticeSession, ...practiceDiaryEntries])
       console.groupEnd("Done!")
