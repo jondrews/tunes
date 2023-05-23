@@ -20,7 +20,7 @@ jobs:
 
       # Install depepndencies and run unit tests
       - name: Install dependencies and run tests
-        run: npm install && npm run test
+        run: npm install && npm run test 
 
       # Added 2023-05-06: address suggestion arising during 'build' script exec.
       - name: Update browsersList

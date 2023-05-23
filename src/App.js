@@ -213,7 +213,7 @@ const App = () => {
           />
 
           <Route
-            path="/tune"
+            path="/tune/:tuneId"
             element={
               <TuneNotation
                 filters={filters}
@@ -226,20 +226,22 @@ const App = () => {
               />
             }
           >
-            <Route
-              path=":tuneId"
-              element={
-                <TuneNotation
-                  filters={filters}
-                  setFilters={setFilters}
-                  userPrefs={userPrefs}
-                  setUserPrefs={setUserPrefs}
-                  practiceDiary={practiceDiary}
-                  preferredSettings={preferredTuneSettings}
-                  managePreferredSettings={managePreferredTuneSettings}
-                />
-              }
-            />
+          </Route>
+
+          <Route
+            path="/set/:setId"
+            element={
+              <TuneNotation
+                filters={filters}
+                setFilters={setFilters}
+                userPrefs={userPrefs}
+                setUserPrefs={setUserPrefs}
+                practiceDiary={practiceDiary}
+                preferredSettings={preferredTuneSettings}
+                managePreferredSettings={managePreferredTuneSettings}
+              />
+            }
+          >
           </Route>
 
           <Route

@@ -6,7 +6,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 // import MenuBookIcon from "@mui/icons-material/MenuBook"
 
-import parseABC from "../../parseABC"
+import parseABC from "../../helpers/parseABC"
 import "./TuneNotation.css"
 import types from "../../types.js"
 import getTune from "../../helpers/getTune"
@@ -17,6 +17,8 @@ export default function TuneNotation({
   managePreferredSettings,
 }) {
   let params = useParams()
+  const pageRoute = useLocation().pathname
+
   const [tuneObject, setTuneObject] = useState()
   const [commentsByAuthorOnly, setCommentsByAuthorOnly] = useState(true)
   const [tuneSetting, setTuneSetting] = useState(0)
@@ -26,7 +28,6 @@ export default function TuneNotation({
   })
 
   const notation = document.getElementById("notation")
-  const pageRoute = useLocation().pathname
 
   const openFullscreen = () => {
     if (notation.requestFullscreen) {
@@ -251,7 +252,19 @@ export default function TuneNotation({
         </div> /* tune comments */
       )}
     </div>
+  ) : params.setId ? (
+    // :setId provided, but no :tuneId
+    <div className="no-tune-selected">
+      <h2>No tune selected</h2>
+      {pageRoute === "/tune" && (
+        <p>
+          Head to the <Link to="/">homepage</Link> to find one
+        </p>
+      )}
+      {pageRoute === "/tunebook" && <p>Select a tune from your tunebook</p>}
+    </div>
   ) : (
+    // No :tuneId, no :setId
     <div className="no-tune-selected">
       <h2>No tune selected</h2>
       {pageRoute === "/tune" && (

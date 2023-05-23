@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react"
+import App from "./App"
 
-test('App container is rendered', () => {
-  render(<App />);
-  const navbarElement = screen.getByTestId('App');
-  expect(navbarElement).toBeInTheDocument();
-});
+test("App container is rendered", () => {
+  render(<App />)
+  const appContainer = screen.getByTestId("App")
+  expect(appContainer).toBeInTheDocument()
+})

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 // import MenuBookIcon from "@mui/icons-material/MenuBook"
 import abcjs from "abcjs"
-import parseABC from "../../parseABC"
+import parseABC from "../../helpers/parseABC"
 
 import types from "../../types.js"
 import getTune from "../../helpers/getTune"

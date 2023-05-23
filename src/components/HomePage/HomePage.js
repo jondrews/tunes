@@ -3,6 +3,8 @@ import ClearIcon from "@mui/icons-material/Clear"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import SearchIcon from "@mui/icons-material/Search"
+import { grey } from "@mui/material/colors"
 import Pluralize from "pluralize"
 import PulseLoader from "react-spinners/PulseLoader"
 
@@ -50,9 +52,7 @@ export default function HomePage({
     const checkedData = { ...resultsFromServer, tunes: [] }
     resultsFromServer.tunes.forEach((result) => {
       if (isInResultsDisplay(result.id)) {
-        console.log(
-          `Omitting Tune #${result.id} ########`
-        )
+        console.log(`Omitting Tune #${result.id} ########`)
         setDuplicates(duplicates + 1)
       } else {
         console.log(`Adding tune #${result.id}.`)
@@ -65,7 +65,7 @@ export default function HomePage({
     setResultsStatus("results found")
 
     // clear resultsFromServer, ready for next set of results from API
-    console.log('Clearing resultsFromServer')
+    console.log("Clearing resultsFromServer")
     setResultsFromServer({})
     console.groupEnd()
   }
@@ -190,16 +190,31 @@ export default function HomePage({
     userPrefs && (
       <div className="HomePage">
         {resultsStatus}
-        <div className="discover-header">
-          <h2>Discover tunes</h2>
+        <div className="discover-header d-flex">
+          <h2 className="flex-shrink-0">Discover tunes</h2>
           <button
             onClick={() => setShowFilterOptions(!showFilterOptions)}
-            className="filters-expand-button btn"
+            className="filters-expand-button btn flex-shrink-0 flex-grow-1"
           >
             {showFilterOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             {showFilterOptions ? "hide filters" : "show filters"}
           </button>
+          <div className="form-group">
+            <div className="tune-search input-group">
+              <input
+                type="text"
+                className="form-control max-width-50"
+                aria-label="Amount (to the nearest dollar)"
+              />
+              <div className="input-group-append">
+                <button className="input-group-text">
+                  <SearchIcon sx={{ color: grey[700] }} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+
         {showFilterOptions && (
           <FilterSelect
             filters={filters}

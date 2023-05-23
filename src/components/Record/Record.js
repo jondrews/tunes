@@ -1,47 +1,43 @@
-import { useReactMediaRecorder } from "react-media-recorder"
-import Recording from "./Recording"
+import TuneRecorder from "./TuneRecorder"
+// import TuneRecording from "./TuneRecording"
 import "./Record.css"
 
 export default function Record({ recordings, setRecordings }) {
-  const recordingFinished = (blobUrl, blob) => {
-    console.log(`Recording stopped! Blob URL is ${blobUrl}:`, blob)
-    setRecordings((oldRecordings) => [
-      {
-        url: blobUrl,
-        date: Date.now(),
-      },
-      ...oldRecordings,
-    ])
-  }
+  // const recordingFinished = (blobUrl, blob) => {
+  //   console.log(`Recording stopped! Blob URL is ${blobUrl}:`, blob)
+  //   setRecordings((oldRecordings) => [
+  //     {
+  //       url: blobUrl,
+  //       date: Date.now(),
+  //     },
+  //     ...oldRecordings,
+  //   ])
+  // }
 
-  const {
-    status,
-    startRecording,
-    stopRecording,
-    // mediaBlobUrl,
-    // previewAudioStream,
-  } = useReactMediaRecorder({
-    video: false,
-    audio: { autoGainControl: false },
-    blobPropertyBag: { type: "audio/mp3" },
-    onStop: recordingFinished,
-  })
+  // const {
+  //   status,
+  //   startRecording,
+  //   stopRecording,
+  //   // mediaBlobUrl,
+  //   // previewAudioStream,
+  // } = useReactMediaRecorder({
+  //   video: false,
+  //   audio: { autoGainControl: false },
+  //   blobPropertyBag: { type: "audio/mp3" },
+  //   onStop: recordingFinished,
+  // })
 
   return (
+    // How to record a MediaStream:
+    // https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery#mediastream_recording
+
     <div className="Record">
-      <div className="media-player">
-        {/* <div className="media-player-visualiser">
-          <audio src={mediaBlobUrl} controls autoPlay />
-        </div> */}
-        <div className="media-player-controls">
-          {/* STATUS includes: idle, acquiring_media, recording, stopping, stopped */}
-          <p>{status}</p>
-          <button onClick={startRecording}>Start Recording</button>
-          <button onClick={stopRecording}>Stop Recording</button>
-        </div>
+      Record
+      <div className="TuneRecorder-container">
+        <TuneRecorder />
       </div>
 
-      <div className="recordings-container">
+      {/* <div className="recordings-container">
         <div className="recordings-header">
           <h2>My recordings: ({recordings.length})</h2>
         </div>
@@ -50,7 +46,7 @@ export default function Record({ recordings, setRecordings }) {
               return(<Recording recording={recording} key={recording.date} />)
             })}
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
