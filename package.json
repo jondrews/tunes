@@ -12,6 +12,7 @@
     "abcjs": "^6.0.4",
     "bootstrap": "^5.2.0",
     "luxon": "^3.3.0",
+    "mic-recorder-to-mp3": "^2.2.2",
     "pluralize": "^8.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",

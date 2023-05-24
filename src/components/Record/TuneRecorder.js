@@ -1,94 +1,60 @@
 import { useEffect, useState } from "react"
 import { DateTime } from "luxon"
+import MicRecorder from "mic-recorder-to-mp3"
 import "./TuneRecorder.css"
 
 export default function TuneRecorder({ setRecordings }) {
-  const [deviceList, setDeviceList] = useState([])
-  const [status, setStatus] = useState("initialising")
   const [recorder, setRecorder] = useState(null) // a MediaRecorder() instance
 
-  const data = [] // Raw data from the MediaRecorder() gets dumped here
-
-  // Query the input devices available to the user's browser
+  // On mount, instantiate a MicRecorder() object.
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      devices.forEach((device) => {
-        if (device.kind === "audioinput") {
-          setDeviceList((oldList) => [...oldList, device])
-        }
+    setRecorder(
+      new MicRecorder({
+        bitRate: 128,
       })
-    })
+    )
   }, [])
 
-  // On mount, instantiate a MediaRecorder() object, available as `recorder`.
-  useEffect(() => {
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then(function onSuccess(stream) {
-          setRecorder(new MediaRecorder(stream))
+  const startRecording = () => {
+    recorder
+      .start()
+      .then(() => {
+        console.log(
+          `RECORDING STARTED - recorder.microphone =`,
+          recorder.microphone
+        )
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+  }
+
+  const stopRecording = () => {
+    recorder
+      .stop()
+      .getMp3()
+      .then(([buffer, blob]) => {
+        // do what ever you want with buffer and blob
+        // Example: Create a mp3 file and play
+        const creationTime = DateTime.now()
+        const file = new File(buffer, "jon-test.mp3", {
+          type: blob.type,
+          lastModified: creationTime,
         })
-        .catch(function onError(error) {
-          setStatus(`ERROR: ${error.message}`)
-          console.log(error.message)
-        })
-    } else {
-      setStatus(`UNAVAILABLE: getUserMedia is not supported`)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (recorder) {
-      visualise()
-
-      /* `dataavailable` is an event that fires periodically each time 
-        `timeslice` milliseconds of media have been recorded (or when the 
-        entire media has been recorded, if `timeslice` wasn't specified). 
-        The event, of type `BlobEvent`, contains the recorded media in 
-        its `data` property. (see https://developer.mozilla.org/en-US/docs/Web/API/BlobEvent) */
-      recorder.ondataavailable = (e) => {
-        data.push(e.data)
-      }
-
-      recorder.onerror = (e) => {
-        // The error object fired here seems to be deprecated...?
-        setStatus(`ERROR: ${e}`)
-        throw e.error || new Error(e.name) // e.name is FF non-spec
-      }
-
-      recorder.onstart = (e) => {
-        setStatus("recording")
-      }
-
-      recorder.onpause = (e) => {
-        setStatus("paused")
-      }
-
-      recorder.onresume = (e) => {
-        setStatus("recording")
-      }
-
-      recorder.onstop = (e) => {
-        setStatus("stopped")
-        const newRecording = {}
-        newRecording.audioBlob = new Blob(data)
-        newRecording.url = window.URL.createObjectURL(newRecording.audioBlob)
-        newRecording.date = DateTime.now() // DateTime() object
+        const url = URL.createObjectURL(file)
+        const newRecording = {
+          url: url,
+          file: file,
+          date: creationTime,
+        }
         setRecordings((existingRecordings) => [
           newRecording,
           ...existingRecordings,
         ])
-        data.length = 0
-      }
-
-      setStatus("ready")
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recorder])
-
-  const visualise = () => {
-    // do something pretty with `recorder.stream`
-    console.log(`VISUALISE:`, recorder.stream)
+      })
+      .catch((e) => {
+        console.log(`ERROR in stopRecording:`, e)
+      })
   }
 
   return (
@@ -97,31 +63,18 @@ export default function TuneRecorder({ setRecordings }) {
         <h2>Tune Recorder</h2>
       </div>
 
-      <select className="tunerecorder-inputdevicelist">
-        {deviceList.map((device, idx) => {
-          return (
-            <option key={idx} value={device.deviceId}>
-              [{idx}] {device.label}
-            </option>
-          )
-        })}
-      </select>
-
-      <div className="tunerecorder-status">Status: {status}</div>
       {recorder ? (
         <div className="tunerecorder-controls">
-          <div className="tunerecorder-state">{recorder.state}</div>
-
           <button
             className="tunerecorder-button start-button btn"
-            onClick={() => recorder.start()}
+            onClick={() => startRecording()}
           >
             start
           </button>
 
           <button
             className="tunerecorder-button stop-button btn"
-            onClick={() => recorder.stop()}
+            onClick={() => stopRecording()}
           >
             stop
           </button>

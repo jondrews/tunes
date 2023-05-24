@@ -1,6 +1,6 @@
 import { useParams, Link, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { DateTime, Interval } from "luxon"
+import { DateTime } from "luxon"
 import abcjs from "abcjs"
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
@@ -279,7 +279,7 @@ export default function TuneNotation({
 
 const TuneComment = ({ comment }) => {
   const commentDate = DateTime.fromSQL(comment.date)
-  
+
   return (
     <div className="TuneComment d-flex align-items-center">
       <div className="author-info d-flex flex-column m-3">

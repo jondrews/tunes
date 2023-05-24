@@ -5,6 +5,7 @@ import "./TuneRecording.css"
 export default function TuneRecording({ recording }) {
   const [elapsedTime, setElapsedTime] = useState("")
 
+  // Keep time on the UI
   useEffect(() => {
     const timeUpdater = setInterval(
       () => setElapsedTime(recording.date.toRelative({ base: DateTime.now() })),
@@ -13,7 +14,7 @@ export default function TuneRecording({ recording }) {
     return () => {
       clearInterval(timeUpdater)
     }
-  }, [])
+  }, [recording.date])
 
   return (
     // How to build an audio player:
@@ -22,7 +23,12 @@ export default function TuneRecording({ recording }) {
     <div className="recording-item d-flex flex-column mb-3">
       {elapsedTime} (
       {recording.date.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}):
-      <audio src={recording.url} controls />
+      <audio controls>
+        <source src={recording.url} type="audio/mp3" />
+        File type not supported: <a href={recording.file}>download mp3</a>
+      </audio>
+      <a href={recording.url}>download mp3</a>
+      {recording.url}
     </div>
   )
 }
