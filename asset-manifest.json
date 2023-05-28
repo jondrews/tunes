@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/tunes-demo/static/css/main.c4d412d7.css",
-    "main.js": "/tunes-demo/static/js/main.3ec87bff.js",
-    "index.html": "/tunes-demo/index.html",
-    "main.c4d412d7.css.map": "/tunes-demo/static/css/main.c4d412d7.css.map",
-    "main.3ec87bff.js.map": "/tunes-demo/static/js/main.3ec87bff.js.map"
+    "main.css": "/tunes/static/css/main.c4d412d7.css",
+    "main.js": "/tunes/static/js/main.3ec87bff.js",
+    "index.html": "/tunes/index.html",
+    "main.c4d412d7.css.map": "/tunes/static/css/main.c4d412d7.css.map",
+    "main.3ec87bff.js.map": "/tunes/static/js/main.3ec87bff.js.map"
   },
   "entrypoints": [
     "static/css/main.c4d412d7.css",
