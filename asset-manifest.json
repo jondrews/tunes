@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tunes-demo/static/css/main.c4d412d7.css",
+    "main.js": "/tunes-demo/static/js/main.3ec87bff.js",
+    "index.html": "/tunes-demo/index.html",
+    "main.c4d412d7.css.map": "/tunes-demo/static/css/main.c4d412d7.css.map",
+    "main.3ec87bff.js.map": "/tunes-demo/static/js/main.3ec87bff.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c4d412d7.css",
+    "static/js/main.3ec87bff.js"
+  ]
+}
