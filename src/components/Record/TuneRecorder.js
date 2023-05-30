@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { DateTime } from "luxon"
-import MicRecorder from "mic-recorder-to-mp3"
+import ReactMic from "mic-recorder-to-mp3"
 import "./TuneRecorder.css"
 
 export default function TuneRecorder({ setRecordings }) {
@@ -8,11 +8,7 @@ export default function TuneRecorder({ setRecordings }) {
 
   // On mount, instantiate a MicRecorder() object.
   useEffect(() => {
-    setRecorder(
-      new MicRecorder({
-        bitRate: 128,
-      })
-    )
+    setRecorder(new ReactMic())
   }, [])
 
   const startRecording = () => {
@@ -25,7 +21,7 @@ export default function TuneRecorder({ setRecordings }) {
         )
       })
       .catch((e) => {
-        console.error(e)
+        console.log(`ERROR in startRecording:`, e)
       })
   }
 
@@ -34,17 +30,17 @@ export default function TuneRecorder({ setRecordings }) {
       .stop()
       .getMp3()
       .then(([buffer, blob]) => {
-        // do what ever you want with buffer and blob
-        // Example: Create a mp3 file and play
         const creationTime = DateTime.now()
-        const file = new File(buffer, "jon-test.mp3", {
-          type: blob.type,
-          lastModified: creationTime,
-        })
-        const url = URL.createObjectURL(file)
+        // const file = new File(buffer, "recording.mp3", {
+        //   type: blob.type,
+        //   lastModified: creationTime,
+        // })
+        // const url = URL.createObjectURL(file)
+        const url = URL.createObjectURL(blob)
         const newRecording = {
           url: url,
-          file: file,
+          buffer: buffer,
+          blob: blob,
           date: creationTime,
         }
         setRecordings((existingRecordings) => [

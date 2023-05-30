@@ -1,0 +1,19 @@
+.waveform-container {
+  display: grid;
+  grid-template-columns: 40px auto;
+  align-items: center;
+  border: 1px solid purple;
+}
+.waveform-container button {
+  /* width: 40px;
+  height: 40px; */
+  border: none;
+  padding: 0;
+  background-color: transparent;
+}
+.waveform-container button .pausebutton {
+  color: rgb(255,0,0,.5);
+}
+.waveform-container button .playbutton {
+  color: rgba(0,128,0,.5);
+}

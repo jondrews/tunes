@@ -10,6 +10,11 @@
   --text-muted: rgb(177, 177, 177);
 }
 
+@font-face {
+  font-family: 'Irish Grover';
+  src: local('Irish Grover'), url(./fonts/IrishGrover-Regular.ttf) format('truetype');
+}
+
 body {
   margin: 0;
   padding-top: 60px;

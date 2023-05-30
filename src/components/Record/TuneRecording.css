@@ -1,0 +1,26 @@
+.filename-input {
+  line-height: 1;
+  font-family: monospace;
+  height: fit-content;
+  background: yellow;
+  cursor: default;
+}
+
+.filename-input-textbox {
+  cursor: text;
+  padding: 0px;
+  border: none;
+  /* border-bottom: 2px solid red; */
+  /* text-decoration: underline red double; */
+  background: inherit;
+  font-weight: bolder;
+}
+.filename-input-textbox:focus {
+  outline: none;
+  background: orange;
+}
+.filename-input-textbox:hover {
+  font-weight: bolder;
+  text-decoration: none;
+  background: orange;
+}

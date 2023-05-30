@@ -1,36 +1,23 @@
+import { useState } from "react"
+
 import TuneRecorder from "./TuneRecorder"
 import TuneRecording from "./TuneRecording"
 import "./Record.css"
 
 export default function Record({ recordings, setRecordings }) {
-  // const recordingFinished = (blobUrl, blob) => {
-  //   console.log(`Recording stopped! Blob URL is ${blobUrl}:`, blob)
-  //   setRecordings((oldRecordings) => [
-  //     {
-  //       url: blobUrl,
-  //       date: Date.now(),
-  //     },
-  //     ...oldRecordings,
-  //   ])
+  const [recordingsDir, setRecordingsDir] = useState(null)
+
+  const supportsHandleSelectDirectory = () => {
+    return typeof(window.showDirectoryPicker)!="undefined"
+  }
+
+  // const handleSelectDirectory = () => {
+  //   window.showDirectoryPicker().then((dirHandle) => {
+  //     console.log("User-selected directory:", dirHandle)
+  //   })
   // }
 
-  // const {
-  //   status,
-  //   startRecording,
-  //   stopRecording,
-  //   // mediaBlobUrl,
-  //   // previewAudioStream,
-  // } = useReactMediaRecorder({
-  //   video: false,
-  //   audio: { autoGainControl: false },
-  //   blobPropertyBag: { type: "audio/mp3" },
-  //   onStop: recordingFinished,
-  // })
-
   return (
-    // How to record a MediaStream:
-    // https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery#mediastream_recording
-
     <div className="Record">
       <TuneRecorder setRecordings={setRecordings} />
 
@@ -38,6 +25,40 @@ export default function Record({ recordings, setRecordings }) {
         <div className="recordings-header">
           <h2>My recordings: ({recordings.length})</h2>
         </div>
+
+        <div className="recordings-select-directory-container">
+          <div>
+            {recordingsDir
+              ? "My recordings are stored here:"
+              : "Select where to find and store your recordings:"}
+          </div>
+          <div className="directory-selection d-flex">
+            <div className="selected-directory">
+              {recordingsDir && recordingsDir}
+            </div>
+
+            <div>{supportsHandleSelectDirectory() ? "handleSelectDirectory is SUPPORTED" : "handleSelectDirectory NOT SUPPORTED"} </div>
+
+            {/* <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => handleSelectDirectory()}
+            >
+              {recordingsDir ? "CHANGE" : "SELECT A DIRECTORY"}
+            </button> */}
+
+            {/* <div className="select-directory-input">
+              <label htmlFor="directory-input">Select Directory</label>
+              <input
+                id="directory-input"
+                type="file"
+                webkitdirectory="true"
+                directory="true"
+                onChange={handleSelectDirectory}
+              />
+            </div> */}
+          </div>
+        </div>
+
         <div className="recordings-list d-flex flex-column">
           {recordings.map((recording, idx) => {
             return (

@@ -3,6 +3,9 @@
 # backups
 *.BAK
 
+# audio files for testing
+*.mp3
+
 # dependencies
 /node_modules
 /.pnp
