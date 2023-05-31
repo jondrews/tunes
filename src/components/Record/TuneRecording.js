@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { DateTime } from "luxon"
 import Waveform from "./Waveform"
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+
 import "./TuneRecording.css"
 
 export default function TuneRecording({ recording }) {
@@ -43,12 +45,12 @@ export default function TuneRecording({ recording }) {
     audioUrl && (
       // TODO: If supported, use showSaveFilePicker to determine if user has
       // downloaded the recording or not.
-
-      <div className="recording-item d-flex flex-column m-3">
-        <div className="elapsed-time">{elapsedTime}</div>
+      <div className="TuneRecording m-3">
         <Waveform audio={audioUrl} />
 
-        <div className="edit-filename d-flex flex-shrink-1">
+        <div className="elapsed-time">{elapsedTime}</div>
+
+        <div className="edit-filename-and-save d-flex flex-shrink-1">
           <div className="filename-input">
             <div
               className={`date-prefix d-inline ${
@@ -73,7 +75,7 @@ export default function TuneRecording({ recording }) {
 
           <a
             id="save-button"
-            className="save-button btn btn-sm btn-outline-success"
+            className="save-button"
             href={audioUrl}
             download={
               useDatePrefix || filename
@@ -85,7 +87,7 @@ export default function TuneRecording({ recording }) {
                 : "recording.mp3"
             }
           >
-            save
+            <FileDownloadIcon />
           </a>
         </div>
       </div>

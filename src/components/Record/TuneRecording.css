@@ -1,6 +1,35 @@
 :root {
-  --filename-bg: yellow;
-  --filename-bg-highlight: orange;
+  --info-text: white;
+  --info-bg: rgba(0,0,0,.7);
+  --info-bg-highlight: rgb(114, 36, 0);
+  --info-bg-sdfgsgd: #0092a5;
+  --radius: 10px;
+}
+
+.TuneRecording {
+  position: relative;
+}
+
+.elapsed-time {
+  color: var(--info-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  border-radius: var(--radius) 0 0 0;
+  background: var(--info-bg);
+  padding: 0 0.5ch 0 var(--radius);
+  font-family: monospace;
+  line-height: 1;
+}
+
+.edit-filename-and-save {
+  color: var(--info-text);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  align-items: flex-end;
 }
 
 .filename-input {
@@ -9,52 +38,65 @@
   height: fit-content;
   cursor: default;
   background: inherit;
+  margin-bottom: 2px;
 }
 
 .date-prefix {
   padding: 0px;
+  padding-left: 0.5ch;
   border: none;
   background: inherit;
 }
 .dateprefixshown {
-  background: var(--filename-bg);
+  background: var(--info-bg);
 }
 .dateprefixshown:hover {
   cursor: pointer;
-  text-decoration: line-through black;
-  background: var(--filename-bg);
-  background: var(--filename-bg-highlight);
+  background: var(--info-bg-highlight);
 }
 
 .dateprefixhidden {
   color: var(--text-muted);
   text-decoration: none;
-  background: inherit;
+  background: var(--info-bg);
 }
 .dateprefixhidden:hover {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  background: var(--filename-bg-highlight);
+  background: var(--info-bg-highlight);
 }
 
 .filename-input-textbox {
+  color: inherit;
   cursor: text;
   padding: 0px;
   border: none;
-  background: var(--filename-bg);
-  font-weight: bolder;
+  background: var(--info-bg);
 }
 .filename-input-textbox:focus {
   outline: none;
-  background: var(--filename-bg-highlight);
+  background: var(--info-bg-highlight);
 }
 .filename-input-textbox:hover {
-  font-weight: bolder;
   text-decoration: none;
-  background: var(--filename-bg-highlight);
+  background: var(--info-bg-highlight);
 }
 
 .file-extension {
-  background: var(--filename-bg);
+  background: var(--info-bg);
+  padding-right: 0.5ch;
+}
+
+.save-button {
+  color: var(--info-text);
+  text-decoration: none;
+  background: var(--info-bg);
+  margin-left: 2px;
+  padding: 10px;
+  border-radius: var(--radius) 0;
+}
+.save-button:hover {
+  color: var(--info-text);
+  background: var(--info-bg-highlight);
 }

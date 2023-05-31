@@ -1,8 +1,10 @@
 .waveform-container {
   display: grid;
+  background: rgb(40,40,40);
   grid-template-columns: 40px auto;
   align-items: center;
-  border: 1px solid purple;
+  border-radius: var(--radius);
+  /* padding: 10px; */
 }
 .waveform-container button {
   /* width: 40px;
