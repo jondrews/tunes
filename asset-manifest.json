@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/tunes/static/css/main.6ab95fa1.css",
-    "main.js": "/tunes/static/js/main.7bd3797e.js",
+    "main.css": "/tunes/static/css/main.6a16fe1d.css",
+    "main.js": "/tunes/static/js/main.01064aa4.js",
     "static/media/IrishGrover-Regular.ttf": "/tunes/static/media/IrishGrover-Regular.b5002ee1c84bf719747b.ttf",
     "index.html": "/tunes/index.html",
-    "main.6ab95fa1.css.map": "/tunes/static/css/main.6ab95fa1.css.map",
-    "main.7bd3797e.js.map": "/tunes/static/js/main.7bd3797e.js.map"
+    "main.6a16fe1d.css.map": "/tunes/static/css/main.6a16fe1d.css.map",
+    "main.01064aa4.js.map": "/tunes/static/js/main.01064aa4.js.map"
   },
   "entrypoints": [
-    "static/css/main.6ab95fa1.css",
-    "static/js/main.7bd3797e.js"
+    "static/css/main.6a16fe1d.css",
+    "static/js/main.01064aa4.js"
   ]
 }
