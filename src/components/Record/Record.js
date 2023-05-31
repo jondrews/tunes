@@ -1,11 +1,9 @@
-import { useState } from "react"
-
 import TuneRecorder from "./TuneRecorder"
 import TuneRecording from "./TuneRecording"
 import "./Record.css"
 
 export default function Record({ recordings, setRecordings }) {
-  const [recordingsDir, setRecordingsDir] = useState(null)
+  // const [recordingsDir, setRecordingsDir] = useState(null)
 
   // const supportsHandleSelectDirectory = () => {
   //   return typeof(window.showDirectoryPicker)!="undefined"

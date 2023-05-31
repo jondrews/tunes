@@ -51,8 +51,8 @@ export default function TuneRecording({ recording }) {
         <div className="elapsed-time">{elapsedTime}</div>
 
         <div className="edit-filename-and-save d-flex flex-shrink-1">
-          {window.innerWidth >= 520 && (
-            <div className="filename-input">
+          <div className="filename-input">
+            {window.innerWidth >= 520 && (
               <div
                 className={`date-prefix d-inline ${
                   useDatePrefix ? "dateprefixshown" : "dateprefixhidden"
@@ -61,6 +61,8 @@ export default function TuneRecording({ recording }) {
               >
                 {useDatePrefix ? datePrefix : "+"}&nbsp;
               </div>
+            )}
+            {window.innerWidth >= 320 && (
               <input
                 className="filename-input-textbox text-truncate"
                 type="text"
@@ -71,9 +73,11 @@ export default function TuneRecording({ recording }) {
                 onChange={(e) => handleFilenameChange(e)}
                 onKeyDown={(e) => detectEnterPress(e)}
               ></input>
+            )}
+            {window.innerWidth >= 350 && (
               <div className="file-extension d-inline">.mp3</div>
-            </div>
-          )}
+            )}
+          </div>
 
           <a
             id="save-button"
