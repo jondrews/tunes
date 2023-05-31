@@ -8,6 +8,7 @@
 
 .TuneRecording {
   position: relative;
+  font-size: smaller;
 }
 
 .elapsed-time {

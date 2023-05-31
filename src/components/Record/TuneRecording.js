@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { DateTime } from "luxon"
 import Waveform from "./Waveform"
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import FileDownloadIcon from "@mui/icons-material/FileDownload"
 
 import "./TuneRecording.css"
 
@@ -51,27 +51,29 @@ export default function TuneRecording({ recording }) {
         <div className="elapsed-time">{elapsedTime}</div>
 
         <div className="edit-filename-and-save d-flex flex-shrink-1">
-          <div className="filename-input">
-            <div
-              className={`date-prefix d-inline ${
-                useDatePrefix ? "dateprefixshown" : "dateprefixhidden"
-              }`}
-              onClick={() => setUseDatePrefix(!useDatePrefix)}
-            >
-              {useDatePrefix ? datePrefix : "[+date time]"}&nbsp;
+          {window.innerWidth >= 520 && (
+            <div className="filename-input">
+              <div
+                className={`date-prefix d-inline ${
+                  useDatePrefix ? "dateprefixshown" : "dateprefixhidden"
+                }`}
+                onClick={() => setUseDatePrefix(!useDatePrefix)}
+              >
+                {useDatePrefix ? datePrefix : "+"}&nbsp;
+              </div>
+              <input
+                className="filename-input-textbox text-truncate"
+                type="text"
+                value={filename}
+                style={{
+                  width: `${Math.max(8, Math.min(filename.length, 30))}ch`,
+                }}
+                onChange={(e) => handleFilenameChange(e)}
+                onKeyDown={(e) => detectEnterPress(e)}
+              ></input>
+              <div className="file-extension d-inline">.mp3</div>
             </div>
-            <input
-              className="filename-input-textbox text-truncate"
-              type="text"
-              value={filename}
-              style={{
-                width: `${Math.max(8, Math.min(filename.length, 30))}ch`,
-              }}
-              onChange={(e) => handleFilenameChange(e)}
-              onKeyDown={(e) => detectEnterPress(e)}
-            ></input>
-            <div className="file-extension d-inline">.mp3</div>
-          </div>
+          )}
 
           <a
             id="save-button"

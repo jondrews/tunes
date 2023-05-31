@@ -8,7 +8,7 @@ import "./Waveform.css"
 export default function Waveform({ audio }) {
   const containerRef = useRef()
   const waveSurferRef = useRef(null)
-  const [isPlaying, toggleIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     console.log("INITIALISING WAVESURFER")
@@ -20,14 +20,11 @@ export default function Waveform({ audio }) {
       barHeight: 8,
       height: 100,
       hideScrollbar: true,
-      progressColor: '#ce00e9',
-      waveColor: '#840096',
+      progressColor: "#ce00e9",
+      waveColor: "#840096",
     })
-    waveSurfer.on("play", () => {console.log("PLAYING")})
-    waveSurfer.on("pause", () => {console.log("PAUSED")})
-    waveSurfer.on("click", (xPos) => {console.log(`CLICKED AT ${xPos}`)})
-    waveSurfer.on("interaction", () => {console.log(`INTERACTION`)})
-
+    waveSurfer.on("play", () => setIsPlaying(true))
+    waveSurfer.on("pause", () => setIsPlaying(false))
     waveSurfer.load(audio)
     waveSurfer.on("ready", () => {
       waveSurferRef.current = waveSurfer
@@ -43,7 +40,6 @@ export default function Waveform({ audio }) {
       <button
         onClick={() => {
           waveSurferRef.current.playPause()
-          toggleIsPlaying(waveSurferRef.current.isPlaying())
         }}
         type="button"
       >

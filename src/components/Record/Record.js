@@ -7,9 +7,9 @@ import "./Record.css"
 export default function Record({ recordings, setRecordings }) {
   const [recordingsDir, setRecordingsDir] = useState(null)
 
-  const supportsHandleSelectDirectory = () => {
-    return typeof(window.showDirectoryPicker)!="undefined"
-  }
+  // const supportsHandleSelectDirectory = () => {
+  //   return typeof(window.showDirectoryPicker)!="undefined"
+  // }
 
   // const handleSelectDirectory = () => {
   //   window.showDirectoryPicker().then((dirHandle) => {
@@ -22,11 +22,7 @@ export default function Record({ recordings, setRecordings }) {
       <TuneRecorder setRecordings={setRecordings} />
 
       <div className="recordings-container">
-        <div className="recordings-header">
-          <h2>My recordings: ({recordings.length})</h2>
-        </div>
-
-        <div className="recordings-select-directory-container">
+        {/* <div className="recordings-select-directory-container">
           <div>
             {recordingsDir
               ? "My recordings are stored here:"
@@ -39,14 +35,14 @@ export default function Record({ recordings, setRecordings }) {
 
             <div>{supportsHandleSelectDirectory() ? "handleSelectDirectory is SUPPORTED" : "handleSelectDirectory NOT SUPPORTED"} </div>
 
-            {/* <button
+            <button
               className="btn btn-sm btn-outline-secondary"
               onClick={() => handleSelectDirectory()}
             >
               {recordingsDir ? "CHANGE" : "SELECT A DIRECTORY"}
-            </button> */}
+            </button>
 
-            {/* <div className="select-directory-input">
+            <div className="select-directory-input">
               <label htmlFor="directory-input">Select Directory</label>
               <input
                 id="directory-input"
@@ -55,9 +51,9 @@ export default function Record({ recordings, setRecordings }) {
                 directory="true"
                 onChange={handleSelectDirectory}
               />
-            </div> */}
+            </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="recordings-list d-flex flex-column">
           {recordings.map((recording, idx) => {
