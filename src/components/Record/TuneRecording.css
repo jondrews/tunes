@@ -1,26 +1,60 @@
+:root {
+  --filename-bg: yellow;
+  --filename-bg-highlight: orange;
+}
+
 .filename-input {
   line-height: 1;
   font-family: monospace;
   height: fit-content;
-  background: yellow;
   cursor: default;
+  background: inherit;
+}
+
+.date-prefix {
+  padding: 0px;
+  border: none;
+  background: inherit;
+}
+.dateprefixshown {
+  background: var(--filename-bg);
+}
+.dateprefixshown:hover {
+  cursor: pointer;
+  text-decoration: line-through black;
+  background: var(--filename-bg);
+  background: var(--filename-bg-highlight);
+}
+
+.dateprefixhidden {
+  color: var(--text-muted);
+  text-decoration: none;
+  background: inherit;
+}
+.dateprefixhidden:hover {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  background: var(--filename-bg-highlight);
 }
 
 .filename-input-textbox {
   cursor: text;
   padding: 0px;
   border: none;
-  /* border-bottom: 2px solid red; */
-  /* text-decoration: underline red double; */
-  background: inherit;
+  background: var(--filename-bg);
   font-weight: bolder;
 }
 .filename-input-textbox:focus {
   outline: none;
-  background: orange;
+  background: var(--filename-bg-highlight);
 }
 .filename-input-textbox:hover {
   font-weight: bolder;
   text-decoration: none;
-  background: orange;
+  background: var(--filename-bg-highlight);
+}
+
+.file-extension {
+  background: var(--filename-bg);
 }

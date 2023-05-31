@@ -10,8 +10,14 @@ export default function TuneRecording({ recording }) {
   const [audioUrl, setAudioUrl] = useState(null)
   const datePrefix = `${recording.date.toFormat("yyyy-MM-dd HH.mm.ss")}`
 
-  const handleNameChange = (e) => {
+  const handleFilenameChange = (e) => {
     setFilename(e.target.value)
+  }
+
+  const detectEnterPress = (e) => {
+    if (e.key === "Enter") {
+      document.getElementById("save-button").click()
+    }
   }
 
   // const supportsShowSaveFilePicker = () => {
@@ -20,7 +26,7 @@ export default function TuneRecording({ recording }) {
 
   useEffect(() => {
     setAudioUrl(URL.createObjectURL(recording.blob))
-  }, [])
+  }, [recording.blob])
 
   // Keep time on the UI
   useEffect(() => {
@@ -39,36 +45,48 @@ export default function TuneRecording({ recording }) {
       // downloaded the recording or not.
 
       <div className="recording-item d-flex flex-column m-3">
-        <div className="elapsed-time">
-          {elapsedTime}
-        </div>
+        <div className="elapsed-time">{elapsedTime}</div>
         <Waveform audio={audioUrl} />
-        {/* <audio controls>
-        <source src={recording.url} type="audio/mp3" />
-        File type not supported: <a href={recording.blob}>download mp3</a>
-      </audio> */}
 
         <div className="edit-filename d-flex flex-shrink-1">
-        <a
-          className="save-button btn btn-sm btn-outline-success"
-          href={audioUrl}
-          download={`${useDatePrefix && datePrefix}${
-            filename && ` ${filename.trim()}`
-          }.mp3`}
-        >
-          save
-        </a>
           <div className="filename-input">
-            {useDatePrefix && datePrefix}&nbsp;
+            <div
+              className={`date-prefix d-inline ${
+                useDatePrefix ? "dateprefixshown" : "dateprefixhidden"
+              }`}
+              onClick={() => setUseDatePrefix(!useDatePrefix)}
+            >
+              {useDatePrefix ? datePrefix : "[+date time]"}&nbsp;
+            </div>
             <input
-              className="filename-input-textbox"
+              className="filename-input-textbox text-truncate"
               type="text"
               value={filename}
-              style={{width: `${filename.length}ch`}}
-              onChange={(e) => handleNameChange(e)}
+              style={{
+                width: `${Math.max(8, Math.min(filename.length, 30))}ch`,
+              }}
+              onChange={(e) => handleFilenameChange(e)}
+              onKeyDown={(e) => detectEnterPress(e)}
             ></input>
-            .mp3
+            <div className="file-extension d-inline">.mp3</div>
           </div>
+
+          <a
+            id="save-button"
+            className="save-button btn btn-sm btn-outline-success"
+            href={audioUrl}
+            download={
+              useDatePrefix || filename
+                ? `${
+                    (useDatePrefix ? datePrefix + (filename ? " " : "") : "") +
+                    (filename ? filename.trim() : "") +
+                    ".mp3"
+                  }`
+                : "recording.mp3"
+            }
+          >
+            save
+          </a>
         </div>
       </div>
     )
