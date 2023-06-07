@@ -1,5 +1,10 @@
-// import { useState } from "react"
+import { useState, useEffect } from "react"
 import { NavLink } from "react-router-dom"
+
+import pluralize from "pluralize"
+
+import getTune from "../../helpers/getTune"
+import keyModeText from "../../helpers/keyModeText"
 
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import QueueMusicIcon from "@mui/icons-material/QueueMusic"
@@ -10,7 +15,6 @@ import "./TuneSelection.css"
 export default function TuneSelection({
   userPrefs,
   practiceDiary,
-  tunebook,
   tunebookLoaded,
   selectionList,
 }) {
@@ -76,13 +80,13 @@ export default function TuneSelection({
                 key={listItem.url}
                 to={`${itemUrl}`}
               >
-                {/* Show a symbol if this tune is in the practice diary */}
-                {/* ########### TODO: Discriminate between tunes and sets here! ############# */}
-                {practiceDiary.containsTune(listItem.id) && (
-                  <div className="isInPracticeDiary">&#x2022;</div>
-                )}
+                {listItem.type === "tune" &&
+                  practiceDiary.containsTune(listItem.id) && (
+                    /* Show a symbol if this tune is in the practice diary */
+                    <div className="isInPracticeDiary">&#x2022;</div>
+                  )}
 
-                {/* tune / setlist icon */}
+                {/* 'tune' or 'set' icon */}
                 <div className="list-item-icon">
                   {listItem.type === "tune" && (
                     <MusicNoteIcon fontSize="small" sx={{ color: grey[700] }} />
@@ -108,19 +112,22 @@ export default function TuneSelection({
                     </div>
                   </div>
 
-                  {/* Tune/Set name (scrolls when content is too long) */}
+                  {/* Tune count & tune list, or key/mode/type (scrolls when content is too long) */}
                   <div className="list-item-sub-title">
-                    <div 
+                    <div
                       className="list-item-sub-title-scrolling"
                       onMouseEnter={(e) => startScrolling(e)}
                       onMouseLeave={(e) => stopScrolling(e)}
                     >
-                      {listItem.name}
+                      {listItem.type === "tune" && (
+                        <TuneDetails tuneId={listItem.id} />
+                      )}
+                      {listItem.type === "set" && 
+                        `Set of ${listItem.settings.length} ${pluralize("tunes", listItem.settings.length)}`
+                      }
                     </div>
                   </div>
                 </div>
-
-                {/* TODO: Show incipit, etc */}
               </NavLink>
             )
           })}
@@ -131,6 +138,7 @@ export default function TuneSelection({
         </div>
       )
     ) : (
+      // TODO: Add a loading spinner/animation here
       <div className="list-selection thesession-tunebook loading">
         Loading your tunebook from thesession.org...
       </div>
@@ -138,10 +146,47 @@ export default function TuneSelection({
   ) : (
     <div className="list-selection thesession-tunebook nomembernumber">
       You haven't linked your thesession.org member account. Go to{" "}
-      <NavLink className="prefs-link" tabIndex="0" to={`/prefs`}>
+      <NavLink className="prefs-link" tabIndex="0" to="/prefs">
         preferences
       </NavLink>{" "}
       to link it.
     </div>
   )
+}
+
+// Returns text describing a tune (eg, "Reel in A dorian")
+const TuneDetails = ({ tuneId }) => {
+  const [tuneDeets, setTuneDeets] = useState(null)
+
+  useEffect(() => {
+    getTune(tuneId).then((data) => {
+      console.log(`TuneDetails ${tuneId}:`, data)
+      setTuneDeets(data)
+    })
+  }, [tuneId])
+
+  return tuneDeets
+    ? `${tuneDeets.type.replace(/^./, (str) =>
+        str.toUpperCase()
+      )} in ${keyModeText(tuneDeets.settings[0].key)}`
+    : "Loading..."
+}
+
+
+// Returns text describing a set (eg, "Set of 3 tunes")
+const SetDetails = ({ setId }) => {
+  // const [setDeets, setSetDeets] = useState(null)
+
+  // useEffect(() => {
+  //   getTune(tuneId).then((data) => {
+  //     console.log(`TuneDetails ${tuneId}:`, data)
+  //     setTuneDeets(data)
+  //   })
+  // }, [tuneId])
+
+  // return tuneDeets
+  //   ? `${tuneDeets.type.replace(/^./, (str) =>
+  //       str.toUpperCase()
+  //     )} in ${keyModeText(tuneDeets.settings[0].key)}`
+  //   : "Loading..."
 }

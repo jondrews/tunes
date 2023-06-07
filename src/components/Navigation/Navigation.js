@@ -19,7 +19,7 @@ export default function Navigation(props) {
         <Navbar.Brand>
           <img
             alt="Violin"
-            src="violin.png"
+            src={process.env.PUBLIC_URL + '/violin.png'}
             width="30"
             height="30"
             className="d-inline-block align-top"

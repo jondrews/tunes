@@ -40,7 +40,7 @@ export default function TuneBook({
           console.log('Tunebook loaded!')
         })
         .catch((error) => {
-          console.log("error fething thesession.org tunebook:", error)
+          console.log("error fetching thesession.org tunebook:", error)
         })
     }
   }, [userPrefs.thesessionMemberId])
@@ -72,7 +72,6 @@ export default function TuneBook({
       <div className="score-area d-flex">
         <div className="tune-selection d-none d-lg-block">
           <TuneSelection
-            tunebook={tunebook}
             tunebookLoaded={tunebookLoaded}
             userPrefs={userPrefs}
             practiceDiary={practiceDiary}
@@ -97,7 +96,6 @@ export default function TuneBook({
         <Offcanvas.Body>
           <div>
             <TuneSelection
-              tunebook={tunebook}
               tunebookLoaded={tunebookLoaded}
               userPrefs={userPrefs}
               practiceDiary={practiceDiary}

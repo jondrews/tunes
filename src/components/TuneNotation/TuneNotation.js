@@ -93,7 +93,7 @@ export default function TuneNotation({
   }, [dimensions, tuneSetting, tuneObject])
 
   return params.tuneId ? (
-    <div className="TuneNotation">
+    <div className="TuneNotation flex-fill">
       {tuneObject && tuneObject.settings && (
         <div className="settings-select-container">
           {tuneObject.settings.length > 1 && (

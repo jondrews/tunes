@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-// import MenuBookIcon from "@mui/icons-material/MenuBook"
-import abcjs from "abcjs"
-import parseABC from "../../helpers/parseABC"
 
-import types from "../../types.js"
+import abcjs from "abcjs"
+
+import parseABC from "../../helpers/parseABC"
 import getTune from "../../helpers/getTune"
+import keyModeText from "../../helpers/keyModeText"
+import types from "../../types.js"
 import "./TuneResult.css"
 
 export default function TuneResult({
@@ -145,10 +146,7 @@ export default function TuneResult({
                     handleClick(event, filterByKey, tune.settings[0].key)
                   }
                 >
-                  {tune.settings[0].key.replace(
-                    /([A-Ga-g][b♭#♯]{0,2})(\s*)([A-Za-z]*)/,
-                    "$1 $3"
-                  )}
+                  {keyModeText(tune.settings[0].key)}
                 </button>
 
                 <span className="tune-id"> #{tune.id}</span>

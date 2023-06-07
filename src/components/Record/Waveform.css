@@ -1,10 +1,10 @@
 .waveform-container {
   display: grid;
-  background: rgb(40,40,40);
+  background: rgb(37, 37, 37);
   grid-template-columns: 40px auto;
   align-items: center;
   border-radius: var(--radius);
-  /* padding: 10px; */
+  padding: 0 10px;
 }
 .waveform-container button {
   /* width: 40px;
@@ -14,8 +14,14 @@
   background-color: transparent;
 }
 .waveform-container button .pausebutton {
-  color: rgb(255,0,0,.5);
+  color: rgb(200, 0, 0);
+}
+.waveform-container button .pausebutton:hover {
+  color: rgb(255,0,0);
 }
 .waveform-container button .playbutton {
-  color: rgba(0,128,0,.5);
+  color: rgb(0,180,0);
+}
+.waveform-container button .playbutton:hover {
+  color: rgb(0, 255, 0);
 }

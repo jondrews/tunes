@@ -1,5 +1,5 @@
 .list-selection .expandible {
-  width: 100%;
+  /* width: 100%; */
   color: red;
   min-width: 250px;
 }
@@ -23,7 +23,7 @@
   cursor: pointer;
   text-decoration: none;
   color: var(--bs-black);
-  width: 100%;
+  /* width: 100%; */
   border: 1px solid gray;
   margin: 5px;
   padding: 5px;

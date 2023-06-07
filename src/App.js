@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { DateTime } from "luxon"
 
@@ -33,7 +33,7 @@ const App = () => {
     showOnlyPrimarySettings: true, // only return a tune result if its FIRST setting matches the filters (otherwise return the tune result if ANY setting matches filters)
     mostRecentInstrument: "defaultstrument",
     customInstrumentsList: [],
-    recordingsDirectory: '/recordings'
+    recordingsDirectory: "/recordings",
   }
 
   const practiceDiaryContainsTune = (findThisTuneId) => {
@@ -122,7 +122,10 @@ const App = () => {
       localStorage.getItem("preferredSettings")
     )
     if (savedPreferredSettings) {
-      console.log("Found preferredSettings in localStorage:", savedPreferredSettings)
+      console.log(
+        "Found preferredSettings in localStorage:",
+        savedPreferredSettings
+      )
       setPreferredTuneSettings(savedPreferredSettings)
     } else {
       console.log("No saved preferredSettings found")
@@ -167,21 +170,18 @@ const App = () => {
       localStorage.setItem(
         "preferredSettings",
         JSON.stringify(preferredTuneSettings)
-        )
-      }
-    }, [preferredTuneSettings, prefTuneSettingsLoaded])
+      )
+    }
+  }, [preferredTuneSettings, prefTuneSettingsLoaded])
 
   // SAVE user preferences when they change, if already mounted
   useEffect(() => {
     if (userPrefsLoaded) {
       console.log("Saving userPrefs as:", userPrefs)
-      localStorage.setItem(
-        "userPrefs",
-        JSON.stringify(userPrefs)
-        )
-      }
-    }, [userPrefs, userPrefsLoaded])
-    
+      localStorage.setItem("userPrefs", JSON.stringify(userPrefs))
+    }
+  }, [userPrefs, userPrefsLoaded])
+
   // SAVE practice diary when it changes, if already mounted
   useEffect(() => {
     if (practiceDiaryLoaded) {
@@ -195,26 +195,69 @@ const App = () => {
 
   return (
     <div className="App" data-testid="App">
-      <BrowserRouter>
-        <Navigation practiceDiary={practiceDiary} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <HomePage
-                filters={filters}
-                setFilters={setFilters}
-                userPrefs={userPrefs}
-                setUserPrefs={setUserPrefs}
-                practiceDiary={practiceDiary}
-                preferredTuneSettings={preferredTuneSettings}
-                managePreferredTuneSettings={managePreferredTuneSettings}
-              />
-            }
-          />
+      <Navigation practiceDiary={practiceDiary} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredTuneSettings={preferredTuneSettings}
+              managePreferredTuneSettings={managePreferredTuneSettings}
+            />
+          }
+        />
 
+        <Route
+          path="/tune/:tuneId"
+          element={
+            <TuneNotation
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredSettings={preferredTuneSettings}
+              managePreferredSettings={managePreferredTuneSettings}
+            />
+          }
+        ></Route>
+
+        <Route
+          path="/set/:setId"
+          element={
+            <TuneNotation
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredSettings={preferredTuneSettings}
+              managePreferredSettings={managePreferredTuneSettings}
+            />
+          }
+        ></Route>
+
+        <Route
+          path="/tunebook"
+          element={
+            <TuneBook
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredSettings={preferredTuneSettings}
+              managePreferredSettings={managePreferredTuneSettings}
+            />
+          }
+        >
           <Route
-            path="/tune/:tuneId"
+            path="tune/:tuneId"
             element={
               <TuneNotation
                 filters={filters}
@@ -226,11 +269,25 @@ const App = () => {
                 managePreferredSettings={managePreferredTuneSettings}
               />
             }
-          >
-          </Route>
+          />
+        </Route>
 
+        <Route
+          path="/practice"
+          element={
+            <Practice
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredSettings={preferredTuneSettings}
+              managePreferredSettings={managePreferredTuneSettings}
+            />
+          }
+        >
           <Route
-            path="/set/:setId"
+            path="tune/:tuneId"
             element={
               <TuneNotation
                 filters={filters}
@@ -242,104 +299,11 @@ const App = () => {
                 managePreferredSettings={managePreferredTuneSettings}
               />
             }
-          >
-          </Route>
-
-          <Route
-            path="/tunebook"
-            element={
-              <TuneBook
-                filters={filters}
-                setFilters={setFilters}
-                userPrefs={userPrefs}
-                setUserPrefs={setUserPrefs}
-                practiceDiary={practiceDiary}
-                preferredSettings={preferredTuneSettings}
-                managePreferredSettings={managePreferredTuneSettings}
-              />
-            }
-          >
-            <Route
-              path="tune/:tuneId"
-              element={
-                <TuneNotation
-                  filters={filters}
-                  setFilters={setFilters}
-                  userPrefs={userPrefs}
-                  setUserPrefs={setUserPrefs}
-                  practiceDiary={practiceDiary}
-                  preferredSettings={preferredTuneSettings}
-                  managePreferredSettings={managePreferredTuneSettings}
-                />
-              }
-            />
-          </Route>
-
-          <Route
-            path="/practice"
-            element={
-              <Practice
-                filters={filters}
-                setFilters={setFilters}
-                userPrefs={userPrefs}
-                setUserPrefs={setUserPrefs}
-                practiceDiary={practiceDiary}
-                preferredSettings={preferredTuneSettings}
-                managePreferredSettings={managePreferredTuneSettings}
-              />
-            }
-          >
-            <Route
-              path="tune/:tuneId"
-              element={
-                <TuneNotation
-                  filters={filters}
-                  setFilters={setFilters}
-                  userPrefs={userPrefs}
-                  setUserPrefs={setUserPrefs}
-                  practiceDiary={practiceDiary}
-                  preferredSettings={preferredTuneSettings}
-                  managePreferredSettings={managePreferredTuneSettings}
-                />
-              }
-            />
-            <Route
-              path="set/:setId"
-              element={
-                <TuneNotation
-                  filters={filters}
-                  setFilters={setFilters}
-                  userPrefs={userPrefs}
-                  setUserPrefs={setUserPrefs}
-                  practiceDiary={practiceDiary}
-                  preferredSettings={preferredTuneSettings}
-                  managePreferredSettings={managePreferredTuneSettings}
-                />
-              }
-            />
-          </Route>
-
-          <Route
-            path="/record"
-            element={
-              <Record
-                filters={filters}
-                setFilters={setFilters}
-                userPrefs={userPrefs}
-                setUserPrefs={setUserPrefs}
-                practiceDiary={practiceDiary}
-                preferredTuneSettings={preferredTuneSettings}
-                managePreferredTuneSettings={managePreferredTuneSettings}
-                recordings={recordings} 
-                setRecordings={setRecordings}
-              />
-            }
           />
-
           <Route
-            path="/prefs"
+            path="set/:setId"
             element={
-              <UserPrefs
+              <TuneNotation
                 filters={filters}
                 setFilters={setFilters}
                 userPrefs={userPrefs}
@@ -350,10 +314,42 @@ const App = () => {
               />
             }
           />
+        </Route>
 
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
+        <Route
+          path="/record"
+          element={
+            <Record
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredTuneSettings={preferredTuneSettings}
+              managePreferredTuneSettings={managePreferredTuneSettings}
+              recordings={recordings}
+              setRecordings={setRecordings}
+            />
+          }
+        />
+
+        <Route
+          path="/prefs"
+          element={
+            <UserPrefs
+              filters={filters}
+              setFilters={setFilters}
+              userPrefs={userPrefs}
+              setUserPrefs={setUserPrefs}
+              practiceDiary={practiceDiary}
+              preferredSettings={preferredTuneSettings}
+              managePreferredSettings={managePreferredTuneSettings}
+            />
+          }
+        />
+
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
     </div>
   )
 }

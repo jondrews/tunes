@@ -1,5 +1,7 @@
-
 .TuneBook .TuneNotation {
   width: 100%;
 }
 
+.tune-selection {
+  width: 250px;
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import getTune from "../../helpers/getTune"
 import "./UserPrefs.css"
 
@@ -103,9 +104,9 @@ function PreferredTuneSetting({ tuneId, settingId, managePreferredSettings }) {
 
   return loaded ? (
     <li className="settings-list loaded">
-      <a className="tune-name" href={`/tune/${tuneId}`}>
+      <Link className="tune-name" to={`/tune/${tuneId}`}>
         {tuneObject.name}
-      </a>
+      </Link>
       <span className="tune-type"> {tuneObject.type}</span>
       <span className="tuneId"> (#{tuneId})</span>: Setting #{settingId + 1} in{" "}
       {/([A-G][b#♭♯]*)/.exec(tuneObject.settings[settingId].key)[0]}{" "}
